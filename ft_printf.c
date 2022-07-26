@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 04:45:14 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/17 15:24:09 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 04:23:29 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,18 @@
 
 int	ft_printf(const char *format, ...)
 {
+	t_list	*token_list;
+	t_list	*option_list;
 	size_t	total;
-	size_t	read;
 	va_list	ap;
 
 	total = 0;
 	va_start(ap, format);
-	while (format && *format)
-	{
-		if (*format != '%')
-		{
-			ft_putchar_fd(*format, 1);
-			++total;
-		}
-		else
-		{
-			read = ft_put_syntax(format);
-		}
-		++format;
-	}
+	token_list = ft_make_tokens(format);
+	option_list = ft_lstmap(token_list, ft_get_option, free);
+	total = ft_show_tokens(token_list, option_list, ap);
 	va_end(ap);
-	return (0);
+	ft_lstclear(&token_list, free);
+	ft_lstclear(&option_list, free);
+	return (total);
 }

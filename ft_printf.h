@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 11:03:12 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/17 14:57:10 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 04:53:28 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,35 +15,23 @@
 # include <stdarg.h>
 # include "libft.h"
 
-typedef enum e_flag
-{
-	FLAG_POUND,
-	FLAG_BLANK,
-	FLAG_PLUS,
-	FLAG_MINUS,
-	FLAG_ZERO
-}			t_flag;
-
-typedef enum e_type
-{
-	TYPE_CHAR,
-	TYPE_STRING,
-	TYPE_POINTER,
-	TYPE_DECIMAL,
-	TYPE_INTEGER,
-	TYPE_UNSIGNED,
-	TYPE_HEXADECIAML_SMALL,
-	TYPE_HEXADECIAML_BIG,
-	TYPE_PERCENTAGE
-}			t_type;
-
 typedef struct s_option
 {
-	t_flag			flag;
-	t_type			type;
-	int				width;
-	int				length;
+	int				text;
+	int				flag_found;
+	int				flag_blank;
+	int				flag_plus;
+	int				flag_minus;
+	int				flag_zero;
+	unsigned int	width;
+	unsigned int	length;
+	char			type;
 }				t_option;
+
+t_list	*ft_make_tokens(const char *format);
+void	*ft_get_option(void	*content);
+char	*ft_parse(t_option	*option, va_list ap);
+size_t	ft_show_tokens(t_list	*token, t_list	*option, va_list ap);
 
 int	ft_printf(const char *format, ...);
 #endif
