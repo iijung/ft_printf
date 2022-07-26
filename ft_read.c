@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 04:45:14 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 08:49:55 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static size_t	get_token_len(char *str)
 		++len;
 	if (str[len] == '.')
 	{
+		++len;
 		while (ft_isdigit(str[len]))
 			++len;
 	}
@@ -93,10 +94,10 @@ static	char	*get_remain(char	*str, t_option	*option)
 		++len;
 	if (str[len] == '.')
 	{
-		option->length = ft_atoi(str);
+		++len;
+		option->length = ft_atoi(str + len);
 		while (ft_isdigit(str[len]))
 			++len;
-		option->width -= option->length + 1;
 	}
 	option->type = str[len];
 	++len;
@@ -109,10 +110,12 @@ void	*ft_get_option(void	*content)
 	t_option	*option;
 
 	curr = content;
-	if (*curr != '%')
-		return (0);
 	option = ft_calloc(1, sizeof(t_option));
-	if (option)
+	if (option == 0)
+		return (0);
+	if (*curr != '%')
+		option->text = 1;
+	else
 	{
 		curr = get_flags(curr, option);
 		curr = get_remain(curr, option);
