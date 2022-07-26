@@ -6,7 +6,7 @@
 #    By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/17 03:49:45 by minjungk          #+#    #+#              #
-#    Updated: 2022/07/17 12:47:47 by minjungk         ###   ########.fr        #
+#    Updated: 2022/07/26 23:55:31 by minjungk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,20 +20,15 @@ NAME = libftprintf.a
 SRCS = \
 	ft_printf.c
 
-SRCS_B = 
-
 OBJS = $(SRCS:.c=.o)
-OBJS_B = $(SRCS_B:.c=.o)
 
 all: $(NAME)
+bonus: $(NAME)
 
 $(NAME): $(OBJS)
 	$(MAKE) -C libft
 	cp $(LIBFT) $@
 	$(AR) $(ARFLAGS) $@ $^ 
-
-bonus: 
-	$(MAKE) OBJS=$(OBJS_B) all 
 
 clean:
 	$(MAKE) -C libft clean
