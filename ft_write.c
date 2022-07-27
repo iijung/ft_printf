@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:55:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 12:12:21 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 13:13:18 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,19 @@
 static size_t	show_token(char *token, t_option *opt, va_list ap)
 {
 	size_t	len;
-	char	*new;
+	char	*tmp;
 
-	len = 0;
 	if (opt->text == 1)
-		new = ft_strdup(token);
+		tmp = ft_strdup(token);
 	else
-		new = ft_parse(opt, ap);
-	if (new == 0)
+		tmp = ft_parse(opt, ap);
+	if (tmp == 0)
 		return (0);
-	len = ft_strlen(new);
-	if (opt->type == 'c' && new[0] == 0)
+	len = ft_strlen(tmp);
+	if (opt->type == 'c')
 		len = 1;
-	ft_putstr_fd(new, 1);
-	free(new);
+	write(1, tmp, len);
+	free(tmp);
 	return (len);
 }
 

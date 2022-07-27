@@ -6,12 +6,11 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 12:14:15 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 13:13:15 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
 static char	*get_text(char type, va_list ap)
 {
