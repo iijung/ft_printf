@@ -6,14 +6,14 @@
 #    By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/17 03:49:45 by minjungk          #+#    #+#              #
-#    Updated: 2022/07/27 04:54:12 by minjungk         ###   ########.fr        #
+#    Updated: 2022/07/27 09:02:29 by minjungk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ARFLAGS = rsc
-CFLAGS = -Wall -Wextra -Werror -I. -I./libft # -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -I. -I./Libft # -g3 -fsanitize=address
 
-LIBFT = ./libft/libft.a
+LIBFT = ./Libft/libft.a
 
 NAME = libftprintf.a
 
@@ -29,16 +29,16 @@ all: $(NAME)
 bonus: $(NAME)
 
 $(NAME): $(OBJS)
-	$(MAKE) -C libft
+	$(MAKE) -C Libft
 	cp $(LIBFT) $@
 	$(AR) $(ARFLAGS) $@ $^ 
 
 clean:
-	$(MAKE) -C libft clean
+	$(MAKE) -C Libft clean
 	$(RM) $(OBJS) $(OBJS_B)
 
 fclean: clean
-	$(MAKE) -C libft fclean
+	$(MAKE) -C Libft fclean
 	$(RM) $(NAME)
 
 re: fclean

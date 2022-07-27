@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 08:49:55 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 11:16:56 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ t_list	*ft_make_tokens(const char *format)
 	return (rtn);
 }
 
-static	char	*get_flags(char *str, t_option	*option)
+static char	*get_flags(char *str, t_option *option)
 {
 	size_t	len;
 
@@ -84,7 +84,7 @@ static	char	*get_flags(char *str, t_option	*option)
 	return (str + len);
 }
 
-static	char	*get_remain(char	*str, t_option	*option)
+static char	*get_remain(char *str, t_option *option)
 {
 	size_t	len;
 
