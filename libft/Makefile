@@ -6,7 +6,7 @@
 #    By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/04 20:07:19 by minjungk          #+#    #+#              #
-#    Updated: 2022/07/17 15:32:14 by minjungk         ###   ########.fr        #
+#    Updated: 2022/07/27 09:42:52 by minjungk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,9 +49,7 @@ SRCS = \
 	ft_putchar_fd.c \
 	ft_putstr_fd.c \
 	ft_putendl_fd.c \
-	ft_putnbr_fd.c
-
-SRCS_B = \
+	ft_putnbr_fd.c \
 	ft_lstnew.c \
 	ft_lstadd_front.c \
 	ft_lstsize.c \
@@ -61,6 +59,10 @@ SRCS_B = \
 	ft_lstclear.c \
 	ft_lstiter.c \
 	ft_lstmap.c
+
+SRCS_B = \
+	ft_utoa.c \
+	ft_utoh.c
 
 OBJS = $(SRCS:.c=.o)
 OBJS_B = $(SRCS_B:.c=.o)

@@ -6,36 +6,45 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:55:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 04:51:15 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 11:17:05 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-size_t	ft_show_tokens(t_list	*token, t_list	*option, va_list ap)
+static size_t	show_token(char *token, t_option *opt, va_list ap)
 {
-	char	*tmp;
+	size_t	len;
+	char	*new;
+
+	len = 0;
+	if (opt->text == 1)
+		new = ft_strdup(token);
+	else
+		new = ft_parse(opt, ap);
+	if (new == 0)
+		return (0);
+	len = ft_strlen(new);
+	ft_putstr_fd(new, 1);
+	free(new);
+	return (len);
+}
+
+size_t	ft_show_tokens(t_list *token, t_list *opt, va_list ap)
+{
 	size_t	total;
 	size_t	len;
 
 	total = 0;
-	while (token && option)
+	while (token && opt)
 	{
-		if (option->content == 0)
-		{
-			len = ft_strlen(token->content);
-			ft_putendl_fd(token->content, 1);
-		}
+		if (opt->content == 0)
+			return (total);
 		else
-		{
-			tmp = ft_parse(option->content, ap);
-			len = ft_strlen(tmp);
-			ft_putendl_fd(tmp, 1);
-			free(tmp);
-		}
+			len = show_token(token->content, opt->content, ap);
 		total += len;
 		token = token->next;
-		option = option->next;
+		opt = opt->next;
 	}
 	return (total);
 }

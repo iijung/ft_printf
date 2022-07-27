@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 11:03:12 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 04:53:28 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 11:17:21 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ typedef struct s_option
 }				t_option;
 
 t_list	*ft_make_tokens(const char *format);
-void	*ft_get_option(void	*content);
-char	*ft_parse(t_option	*option, va_list ap);
-size_t	ft_show_tokens(t_list	*token, t_list	*option, va_list ap);
+void	*ft_get_option(void *content);
+char	*ft_parse(t_option *opt, va_list ap);
+size_t	ft_show_tokens(t_list *token, t_list *opt, va_list ap);
 
-int	ft_printf(const char *format, ...);
+int		ft_printf(const char *format, ...);
 #endif
