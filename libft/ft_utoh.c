@@ -6,13 +6,13 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:05:50 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 10:57:30 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 12:21:58 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t	numlen(unsigned long n)
+static size_t	nlen(unsigned long n)
 {
 	size_t	len;
 
@@ -27,6 +27,16 @@ static size_t	numlen(unsigned long n)
 	return (len);
 }
 
+static char	*null_text(int is_upper, int is_prefix)
+{
+	if (is_prefix == 0)
+		return (ft_strdup("0"));
+	if (is_upper)
+		return (ft_strdup("0X0"));
+	else
+		return (ft_strdup("0x0"));
+}
+
 char	*ft_utoh(unsigned long n, int is_upper, int is_prefix)
 {
 	size_t	i;
@@ -34,12 +44,10 @@ char	*ft_utoh(unsigned long n, int is_upper, int is_prefix)
 	char	*rtn;
 
 	if (n == 0)
-		return (ft_strdup("0"));
-	i = numlen(n) + (2 * is_prefix);
+		return (null_text(is_upper, is_prefix));
+	i = nlen(n) + (2 * is_prefix);
 	rtn = (char *)ft_calloc(i + 1, sizeof(char));
-	if (rtn == 0)
-		return (0);
-	while (n)
+	while (rtn && n)
 	{
 		ch = n % 16;
 		if (ch < 10)
@@ -48,7 +56,7 @@ char	*ft_utoh(unsigned long n, int is_upper, int is_prefix)
 			rtn[--i] = ch + 'a' - 10 - (32 * is_upper);
 		n /= 16;
 	}
-	if (is_prefix)
+	if (rtn && is_prefix)
 	{
 		rtn[0] = '0';
 		rtn[1] = 'x' - (32 * is_upper);
