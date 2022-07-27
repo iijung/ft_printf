@@ -6,28 +6,42 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 11:17:50 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/07/27 12:14:15 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <stdio.h>
 
-char	*ft_parse(t_option *opt, va_list ap)
+static char	*get_text(char type, va_list ap)
 {
 	char	*tmp;
+	char	*rtn;
 
+	rtn = 0;
+	if (type == 'c')
+	{
+		rtn = ft_calloc(2, sizeof(char));
+		if (rtn)
+			rtn[0] = va_arg(ap, int);
+	}
+	else if (type == 's')
+	{
+		tmp = va_arg(ap, char *);
+		if (tmp)
+			rtn = ft_strdup(tmp);
+	}
+	if (rtn == 0)
+		return (ft_strdup("(null)"));
+	return (rtn);
+}
+
+char	*ft_parse(t_option *opt, va_list ap)
+{
 	if (opt->type == '%')
 		return (ft_strdup("%"));
-	if (opt->type == 'c')
-	{
-		tmp = ft_calloc(2, sizeof(char));
-		if (tmp)
-			tmp[0] = va_arg(ap, int);
-		return (tmp);
-	}
-	if (opt->type == 's')
-		return (ft_strdup(va_arg(ap, char *)));
+	if (opt->type == 'c' || opt->type == 's')
+		return (get_text(opt->type, ap));
 	if (opt->type == 'd' || opt->type == 'i')
 		return (ft_itoa(va_arg(ap, int)));
 	if (opt->type == 'u')
