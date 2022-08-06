@@ -6,26 +6,75 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 04:45:14 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 08:52:12 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/07 02:30:35 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_printf(const char *format, ...)
+static t_list	*make_tokens(const char *format)
 {
-	t_list	*token_list;
-	t_list	*option_list;
-	size_t	total;
-	va_list	ap;
+	t_list		*head;
+	t_list		*tmp;
+	t_token		*token;
+	size_t		len;
+
+	head = 0;
+	len = 0;
+	while (format && format[len])
+	{
+		token = ft_make_token((char *)format + len);
+		if (token == 0)
+			break ;
+		tmp = ft_lstnew(token);
+		if (tmp == 0 || token->in == 0)
+		{
+			ft_free_token(token);
+			break ;
+		}
+		ft_lstadd_back(&head, tmp);
+		len += ft_strlen(token->in);
+	}
+	return (head);
+}
+
+static int	parse_tokens(t_list *lst, va_list ap)
+{
+	int		len;
+	int		total;
+	t_token	*token;
 
 	total = 0;
+	while (lst && lst->content)
+	{
+		token = lst->content;
+		if (ft_parse_token(token, ap) < 0)
+			return (total);
+		if (token->opt.width == 0)
+			token->opt.width = ft_strlen(token->out);
+		len = write(1, token->out, token->opt.width);
+		if (len < 0)
+			return (total);
+		total += len;
+		lst = lst->next;
+	}
+	return (total);
+}
+
+int	ft_printf(const char *format, ...)
+{
+	t_list	*head;
+	int		total;
+	va_list	ap;
+
+	total = -1;
 	va_start(ap, format);
-	token_list = ft_make_tokens(format);
-	option_list = ft_lstmap(token_list, ft_get_option, free);
-	total = ft_show_tokens(token_list, option_list, ap);
+	head = make_tokens(format);
+	if (head)
+	{
+		total = parse_tokens(head, ap);
+		ft_lstclear(&head, ft_free_token);
+	}
 	va_end(ap);
-	ft_lstclear(&token_list, free);
-	ft_lstclear(&option_list, free);
 	return (total);
 }

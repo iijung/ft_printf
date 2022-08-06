@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 11:03:12 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 11:17:21 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/07 01:16:01 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,27 @@
 
 typedef struct s_option
 {
-	int				text;
-	int				flag_found;
-	int				flag_blank;
-	int				flag_plus;
-	int				flag_minus;
-	int				flag_zero;
-	unsigned int	width;
-	unsigned int	length;
-	char			type;
+	int			found;
+	int			blank;
+	int			plus;
+	int			minus;
+	int			zero;
+	int			precision;
+	int			width;
+	int			length;
+	char		type;
 }				t_option;
 
-t_list	*ft_make_tokens(const char *format);
-void	*ft_get_option(void *content);
-char	*ft_parse(t_option *opt, va_list ap);
-size_t	ft_show_tokens(t_list *token, t_list *opt, va_list ap);
+typedef struct s_token
+{
+	char		*in;
+	char		*out;
+	t_option	opt;
+}				t_token;
+
+void	ft_free_token(void *content);
+t_token	*ft_make_token(void *content);
+int		ft_parse_token(t_token *token, va_list ap);
 
 int		ft_printf(const char *format, ...);
 #endif

@@ -6,21 +6,20 @@
 #    By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/17 03:49:45 by minjungk          #+#    #+#              #
-#    Updated: 2022/07/27 09:02:29 by minjungk         ###   ########.fr        #
+#    Updated: 2022/08/07 02:25:06 by minjungk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ARFLAGS = rsc
-CFLAGS = -Wall -Wextra -Werror -I. -I./Libft # -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -I. -I./Libft  -g3 # -fsanitize=address
 
 LIBFT = ./Libft/libft.a
 
 NAME = libftprintf.a
 
 SRCS = \
-	ft_read.c \
-	ft_parse.c \
-	ft_write.c \
+	ft_make_token.c \
+	ft_parse_token.c \
 	ft_printf.c
 
 OBJS = $(SRCS:.c=.o)
@@ -47,7 +46,10 @@ re: fclean
 .PHONY: all clean fclean re bonus
 
 
+LD_FLAGS = -I./Libft -L. -lftprintf
 test: $(NAME)
-	@$(CC) $(CFLAGS) -lftprintf -L. main.c
-	@./a.out
-	@rm a.out
+	@$(RM) a.out
+	$(CC) $(CFLAGS) main.c $(LD_FLAGS)
+#	$(CC) main.c $(LD_FLAGS)
+	@./a.out | cat -e
+
