@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 18:57:05 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 19:02:07 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ static int	parse_puxX(t_token *t, unsigned long ul)
 
 	if (t->type == 'p' && ul == 0)
 	{
+		t->width = ft_strlen("(nil)");
 		t->out = ft_strdup("(nil)");
 		return (0);
 	}
