@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 11:43:34 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 12:26:49 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 16:10:12 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	main(void)
 
 	srand(time(NULL));
 	num = rand();
+	num = -3;
 
 //	result = ft_printf("%dHello\n");
 //	printf("0123456789ABCDEF0123456789ABCDEF\n");
@@ -30,9 +31,9 @@ int	main(void)
 //	result = ft_printf("num : %  +++  +0-d\tfloat : %f\n char : %c\t str : %s$$\n", 123, 12.3, 'A', "hi test");
 //	result = ft_printf("== %20x ==\n", num);
 //	printf("print_word is %d\n", result);
-	result = printf("== %-7i ==\n", num);
+	result = printf("== %-2.5i ==\n", num);
 	printf("print_word is %d\n", result);
-	result = ft_printf("== %-7i ==\n", num);
+	result = ft_printf("== %-2.5i ==\n", num);
 	printf("print_word is %d\n", result);
 	return (0);
 }

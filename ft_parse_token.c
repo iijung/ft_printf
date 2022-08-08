@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 12:38:48 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 16:12:59 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,47 +38,80 @@ void	ft_debug(t_token *t)
 	printf("=============\n");
 }
 
-static int	parse_c(t_token *t, char c)
+static void make_out(t_token *t, char *copy)
 {
-	if (t->width == 0)
-		t->width = 1;
-	t->out = ft_calloc(t->width + 1, sizeof(char));
-	if (t->out == 0)
-		return (-1);
-	if ((t->opt & MINUS) == 0 && t->opt & ZERO)
-		ft_memset(t->out, '0', t->width);
-	else
-		ft_memset(t->out, ' ', t->width);
-	if (t->opt & MINUS)
-		t->out[0] = c;
-	else
-		t->out[t->width - 1] = c;
-	return (0);
-}
-
-static int	parse_s(t_token *t, char *s)
-{
-	if (s == 0 && t->opt & PREC && t->length < (int)ft_strlen("(null)"))
-		s = "";
-	else if (s == 0)
-		s = "(null)";
-	if ((t->opt & PREC) == 0 || t->length >= (int)ft_strlen(s))
-		t->length = ft_strlen(s);
 	if (t->width < t->length)
 		t->width = t->length;
 	t->out = ft_calloc(t->width + 1, sizeof(char));
 	if (t->out == 0)
-		return (-1);
-	if ((t->opt & MINUS) == 0 && (t->opt & ZERO))
+		return ;
+	if (t->opt & ZERO)
 		ft_memset(t->out, '0', t->width);
 	else
 		ft_memset(t->out, ' ', t->width);
 	if (t->opt & MINUS)
-		ft_memcpy(t->out, s, t->length);
+		ft_memcpy(t->out, copy, t->length);
 	else
-		ft_memcpy(t->out + t->width - t->length, s, t->length);
+		ft_memcpy(t->out + t->width - t->length, copy, t->length);
+}
+
+static int	parse_text(t_token *t, va_list ap)
+{
+	char	c;
+	char	*s;
+
+	if (t->type == 'c')
+	{
+		t->length = 1;
+		if (t->width == 0)
+			t->width = 1;
+		c = va_arg(ap, int);
+		if (c == 0)
+			make_out(t, "");
+		else
+			make_out(t, &c);
+	}
+	else if (t->type == 's')
+	{
+		s = va_arg(ap, char *);
+		if (s == 0 && t->opt & PREC && t->length < (int)ft_strlen("(null)"))
+			s = "";
+		else if (s == 0)
+			s = "(null)";
+		if ((t->opt & PREC) == 0 || t->length >= (int)ft_strlen(s))
+			t->length = ft_strlen(s);
+		if (t->width < t->length)
+			t->width = t->length;
+		make_out(t, s);
+	}
 	return (0);
 }
+
+static int	parse_number(t_token *t, va_list ap)
+{
+	char	*s;
+
+	if (t->type == 'u')
+		s = ft_utoa(va_arg(ap, unsigned int), "0123456789");
+	else
+		s = ft_itoa(va_arg(ap, int));
+	if (s == 0)
+		return (-1);
+	if (t->opt & PREC)
+	{
+		t->width = t->length;
+		t->opt |= ZERO;
+		t->opt &= ~MINUS;
+	}
+	t->length = ft_strlen(s);
+	if (t->width < t->length)
+		t->width = t->length;
+	make_out(t, s);
+
+	free(s);
+	return (0);
+}
+
 
 /* ************************************************************************** */
 static int	parse_puxX(t_token *t, unsigned long ul)
@@ -90,10 +123,7 @@ static int	parse_puxX(t_token *t, unsigned long ul)
 		t->out = ft_strdup("(nil)");
 		return (0);
 	}
-	if (t->type == 'u')
-		tmp = ft_utoa(ul, "0123456789");
-	else
-		tmp = ft_utoa(ul, "0123456789abcdef");
+	tmp = ft_utoa(ul, "0123456789abcdef");
 	t->length = ft_strlen(tmp);
 	if (t->width < (int)ft_strlen(tmp) + (int)(2 * (t->opt & FOUND)))
 		t->width = ft_strlen(tmp) + 2 * (t->opt & FOUND);
@@ -103,7 +133,7 @@ static int	parse_puxX(t_token *t, unsigned long ul)
 		free(tmp);
 		return (-1);
 	}
-	if ((t->opt & MINUS) == 0 && (t->opt & ZERO))
+	if (t->opt & ZERO)
 		ft_memset(t->out, '0', t->width);
 	else
 		ft_memset(t->out, ' ', t->width);
@@ -119,6 +149,7 @@ static int	parse_puxX(t_token *t, unsigned long ul)
 	return (0);
 }
 
+/*
 static int	parse_di(t_token *t, int num)
 {
 	int	flag;
@@ -135,7 +166,7 @@ static int	parse_di(t_token *t, int num)
 		free(tmp);
 		return (-1);
 	}
-	if ((t->opt & MINUS) == 0 && (t->opt & ZERO))
+	if (t->opt & ZERO)
 		ft_memset(t->out, '0', t->width);
 	else
 		ft_memset(t->out, ' ', t->width);
@@ -146,7 +177,7 @@ static int	parse_di(t_token *t, int num)
 	free(tmp);
 	return (0);
 }
-
+*/
 int	ft_parse_token(t_token *t, va_list ap)
 {
 	if (t == 0)
@@ -155,14 +186,10 @@ int	ft_parse_token(t_token *t, va_list ap)
 		t->out = ft_strdup(t->in);
 	else if (t->type == '%')
 		t->out = ft_strdup("%");
-	else if (t->type == 'c')
-		return (parse_c(t, va_arg(ap, int)));
-	else if (t->type == 's')
-		return (parse_s(t, va_arg(ap, char *)));
-	else if (t->type == 'd' || t->type == 'i')
-		return (parse_di(t, va_arg(ap, int)));
-	else if (t->type == 'u')
-		return (parse_puxX(t, va_arg(ap, unsigned int)));
+	else if (t->type == 'c' || t->type == 's')
+		return (parse_text(t, ap));
+	else if (t->type == 'd' || t->type == 'i' || t->type == 'u')
+		return (parse_number(t, ap));
 	else if (t->type == 'x' || t->type == 'X')
 		return (parse_puxX(t, va_arg(ap, unsigned int)));
 	else if (t->type == 'p')

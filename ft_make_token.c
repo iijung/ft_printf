@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 12:38:12 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 15:32:21 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,12 @@ t_token	*ft_make_token(void *content)
 		t->in = ft_strdup(fmt);
 	else
 		t->in = ft_substr(fmt, 0, len);
+	if ((t->opt & BLANK) && (t->opt & PLUS))
+		t->opt &= ~BLANK;
+	if ((t->opt & ZERO) && (t->opt & MINUS))
+		t->opt &= ~ZERO;
+	if (t->type != 'd' && t->type != 'i')
+		t->opt &= ~(PLUS | BLANK);
 	return (t);
 }
 

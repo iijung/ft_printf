@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:05:50 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 08:17:05 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/08 16:00:59 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,11 @@ char	*ft_utoa(unsigned long n, char *base)
 	base_len = baselen(base);
 	if (base_len <= 0)
 		return (0);
-	if (n == 0)
-		return (ft_strdup(&base[0]));
 	i = numlen(n, base_len);
 	rtn = (char *)ft_calloc(i + 1, sizeof(char));
 	if (rtn == 0)
 		return (0);
+	rtn[0] = base[0];
 	while (n)
 	{
 		rtn[--i] = base[n % base_len];
