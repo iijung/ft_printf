@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 19:21:53 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 20:55:12 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void	ft_debug(t_token *t)
 static void make_out(t_token *t, char *copy)
 {
 	int	len;
+
 	if (t->width < t->length)
 		t->width = t->length;
 	t->out = ft_calloc(t->width + 1, sizeof(char));
@@ -107,8 +108,6 @@ static int	parse_number(t_token *t, va_list ap)
 		t->opt &= ~MINUS;
 	}
 	t->length = ft_strlen(s);
-	if (t->width < t->length)
-		t->width = t->length;
 	make_out(t, s);
 	if (s[0] == '-' && (t->opt & ZERO))
 	{
@@ -122,7 +121,7 @@ static int	parse_number(t_token *t, va_list ap)
 
 
 /* ************************************************************************** */
-static int	parse_puxX(t_token *t, unsigned long ul)
+static int	parse_pxX(t_token *t, unsigned long ul)
 {
 	char	*tmp;
 
@@ -158,35 +157,6 @@ static int	parse_puxX(t_token *t, unsigned long ul)
 	return (0);
 }
 
-/*
-static int	parse_di(t_token *t, int num)
-{
-	int	flag;
-	char	*tmp;
-
-	tmp = ft_itoa(num);
-	t->length = ft_strlen(tmp);
-	flag = num >= 0 && (t->opt & (BLANK | PLUS));
-	if (t->width < (int)ft_strlen(tmp) + flag)
-		t->width = ft_strlen(tmp) + flag;
-	t->out = ft_calloc(t->width + 1, sizeof(char));
-	if (t->out == 0)
-	{
-		free(tmp);
-		return (-1);
-	}
-	if (t->opt & ZERO)
-		ft_memset(t->out, '0', t->width);
-	else
-		ft_memset(t->out, ' ', t->width);
-	if (t->opt & MINUS)
-		ft_memcpy(t->out + flag, tmp, t->length);
-	else
-		ft_memcpy(t->out + t->width - ft_strlen(tmp), tmp, ft_strlen(tmp));
-	free(tmp);
-	return (0);
-}
-*/
 int	ft_parse_token(t_token *t, va_list ap)
 {
 	if (t == 0)
@@ -200,9 +170,9 @@ int	ft_parse_token(t_token *t, va_list ap)
 	else if (t->type == 'd' || t->type == 'i' || t->type == 'u')
 		return (parse_number(t, ap));
 	else if (t->type == 'x' || t->type == 'X')
-		return (parse_puxX(t, va_arg(ap, unsigned int)));
+		return (parse_pxX(t, va_arg(ap, unsigned int)));
 	else if (t->type == 'p')
-		return (parse_puxX(t, va_arg(ap, unsigned long)));
+		return (parse_pxX(t, va_arg(ap, unsigned long)));
 	if (t->out == 0)
 		return (-1);
 	return (0);
