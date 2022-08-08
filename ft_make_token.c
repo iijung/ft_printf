@@ -6,57 +6,37 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/09 01:00:07 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/09 01:30:47 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	get_flags(char *f, t_token *t)
+static int	get_option(char *f, t_token *t, int len)
 {
-	int	len;
-
-	len = 1;
 	while (f[len] == '#' || f[len] == ' ' || f[len] == '0'
 		|| f[len] == '+' || f[len] == '-')
 	{
-		if (f[len] == '#')
-			t->opt |= FOUND;
-		else if (f[len] == ' ')
-			t->opt |= BLANK;
-		else if (f[len] == '0')
-			t->opt |= ZERO;
-		else if (f[len] == '+')
-			t->opt |= PLUS;
-		else if (f[len] == '-')
-			t->opt |= MINUS;
+		t->opt |= FOUND * (f[len] == '#');
+		t->opt |= BLANK * (f[len] == ' ');
+		t->opt |= ZERO * (f[len] == '0');
+		t->opt |= PLUS * (f[len] == '+');
+		t->opt |= MINUS * (f[len] == '-');
 		++len;
 	}
-	return (len);
-}
-
-static int	get_option(char *f, t_token *t)
-{
-	int	len;
-
-	if (f[0] != '%')
-		return (ft_strchr(f, '%') - f);
-	len = get_flags(f, t);
 	t->width = ft_atoi(f + len);
 	while (ft_isdigit(f[len]))
 		++len;
-	if (f[len] == '.')
+	t->type = f[len++];
+	t->opt |= PREC * (t->type == '.');
+	t->opt |= FOUND * (t->type == 'p');
+	if (t->type == '.')
 	{
-		t->opt |= PREC;
-		++len;
 		t->precision = ft_atoi(f + len);
 		while (ft_isdigit(f[len]))
 			++len;
+		t->type = f[len++];
 	}
-	t->type = f[len];
-	if (t->type == 'p')
-		t->opt |= FOUND;
-	++len;
 	return (len);
 }
 
@@ -72,7 +52,10 @@ t_token	*ft_make_token(void *content)
 	if (t == 0)
 		return (0);
 	fmt = content;
-	len = get_option(content, t);
+	if (fmt[0] != '%')
+		len = ft_strchr(fmt, '%') - fmt;
+	else
+		len = get_option(content, t, 1);
 	if (len < 0)
 		t->in = ft_strdup(fmt);
 	else
