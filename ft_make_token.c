@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/09 01:40:17 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/09 02:41:42 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	ft_free_token(void *content)
 	t->out = 0;
 	free(content);
 }
+
 static int	get_option(char *f, t_token *t, int len)
 {
 	while (f[len] == '#' || f[len] == ' ' || f[len] == '0'
