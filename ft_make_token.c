@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 06:31:45 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/08 12:06:48 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,15 @@ static int	get_flags(char *f, t_token *token)
 		|| f[len] == '+' || f[len] == '-')
 	{
 		if (f[len] == '#')
-			token->opt.found = 1;
+			token->opt |= FOUND;
 		else if (f[len] == ' ')
-			token->opt.blank = 1;
+			token->opt |= BLANK;
 		else if (f[len] == '0')
-			token->opt.zero = 1;
+			token->opt |= ZERO;
 		else if (f[len] == '+')
-			token->opt.plus = 1;
+			token->opt |= PLUS;
 		else if (f[len] == '-')
-			token->opt.minus = 1;
+			token->opt |= MINUS;
 		++len;
 	}
 	return (len);
@@ -42,20 +42,20 @@ static int	get_option(char *f, t_token *token)
 	if (f[0] != '%')
 		return (ft_strchr(f, '%') - f);
 	len = get_flags(f, token);
-	token->opt.width = ft_atoi(f + len);
+	token->width = ft_atoi(f + len);
 	while (ft_isdigit(f[len]))
 		++len;
 	if (f[len] == '.')
 	{
-		token->opt.precision = 1;
+		token->opt |= PREC;
 		++len;
-		token->opt.length = ft_atoi(f + len);
+		token->length = ft_atoi(f + len);
 		while (ft_isdigit(f[len]))
 			++len;
 	}
-	token->opt.type = f[len];
-	if (token->opt.type == 'p')
-		token->opt.found = 1;
+	token->type = f[len];
+	if (token->type == 'p')
+		token->opt |= FOUND;
 	++len;
 	return (len);
 }

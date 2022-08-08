@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 11:43:34 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 08:55:29 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/08 12:26:49 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ int	main(void)
 //	result = ft_printf("num : %  +++  +0-d\tfloat : %f\n char : %c\t str : %s$$\n", 123, 12.3, 'A', "hi test");
 //	result = ft_printf("== %20x ==\n", num);
 //	printf("print_word is %d\n", result);
-	result = printf("== %-p ==\n", &num);
+	result = printf("== %-7i ==\n", num);
 	printf("print_word is %d\n", result);
-	result = ft_printf("== %-p ==\n", &num);
+	result = ft_printf("== %-7i ==\n", num);
 	printf("print_word is %d\n", result);
 	return (0);
 }

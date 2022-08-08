@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 11:03:12 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/07 01:16:01 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/08 12:16:11 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,24 @@
 # include <stdarg.h>
 # include "libft.h"
 
-typedef struct s_option
+typedef enum e_option
 {
-	int			found;
-	int			blank;
-	int			plus;
-	int			minus;
-	int			zero;
-	int			precision;
-	int			width;
-	int			length;
-	char		type;
-}				t_option;
+	NONE	= 0,
+	FOUND	= 1 << 0,
+	BLANK	= 1 << 1,
+	PLUS	= 1 << 2,
+	MINUS	= 1 << 3,
+	ZERO	= 1 << 4,
+	PREC	= 1 << 5
+}			t_option;
 
 typedef struct s_token
 {
 	char		*in;
 	char		*out;
+	char		type;
+	int			width;
+	int			length;
 	t_option	opt;
 }				t_token;
 
