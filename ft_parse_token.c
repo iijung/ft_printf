@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 17:23:16 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 18:57:05 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ static void make_out(t_token *t, char *copy)
 
 static int	parse_text(t_token *t, va_list ap)
 {
-	char	c;
 	char	*s;
 
 	if (t->type == 'c')
@@ -65,11 +64,8 @@ static int	parse_text(t_token *t, va_list ap)
 		t->length = 1;
 		if (t->width == 0)
 			t->width = 1;
-		c = va_arg(ap, int);
-		if (c == 0)
-			make_out(t, "");
-		else
-			make_out(t, &c);
+		make_out(t, "");
+		t->out[0] = va_arg(ap, int);
 	}
 	else if (t->type == 's')
 	{
