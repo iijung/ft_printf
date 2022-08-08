@@ -6,12 +6,25 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/09 01:30:47 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/09 01:40:17 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
+void	ft_free_token(void *content)
+{
+	t_token	*t;
+
+	if (content == 0)
+		return ;
+	t = content;
+	free(t->in);
+	free(t->out);
+	t->in = 0;
+	t->out = 0;
+	free(content);
+}
 static int	get_option(char *f, t_token *t, int len)
 {
 	while (f[len] == '#' || f[len] == ' ' || f[len] == '0'
@@ -60,25 +73,37 @@ t_token	*ft_make_token(void *content)
 		t->in = ft_strdup(fmt);
 	else
 		t->in = ft_substr(fmt, 0, len);
-	if ((t->opt & BLANK) && (t->opt & PLUS))
+	if (t->opt & PLUS)
 		t->opt &= ~BLANK;
-	if ((t->opt & ZERO) && (t->opt & MINUS))
+	if (t->opt & MINUS)
 		t->opt &= ~ZERO;
 	if (t->type != 'd' && t->type != 'i')
 		t->opt &= ~(PLUS | BLANK);
 	return (t);
 }
 
-void	ft_free_token(void *content)
+t_list	*ft_make_tokens(const char *format)
 {
-	t_token	*t;
+	t_list		*head;
+	t_list		*tmp;
+	t_token		*token;
+	size_t		len;
 
-	if (content == 0)
-		return ;
-	t = content;
-	free(t->in);
-	free(t->out);
-	t->in = 0;
-	t->out = 0;
-	free(content);
+	head = 0;
+	len = 0;
+	while (format && format[len])
+	{
+		token = ft_make_token((char *)format + len);
+		if (token == 0)
+			break ;
+		tmp = ft_lstnew(token);
+		if (tmp == 0 || token->in == 0)
+		{
+			ft_free_token(token);
+			break ;
+		}
+		ft_lstadd_back(&head, tmp);
+		len += ft_strlen(token->in);
+	}
+	return (head);
 }
