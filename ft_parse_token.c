@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 12:28:57 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 12:38:48 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,161 +14,160 @@
 
 #include <stdio.h>
 
-void	ft_debug(t_token *token)
+void	ft_debug(t_token *t)
 {
-	if (token == 0)
+	if (t == 0)
 		return ;
 	printf("=== debug ===\n");
 	printf("in [%3ld] : %.*s\n", \
-		token->in ? ft_strlen(token->in) : 0, \
-		token->in ? (int)ft_strlen(token->in) : 0, token->in);
+		t->in ? ft_strlen(t->in) : 0, \
+		t->in ? (int)ft_strlen(t->in) : 0, t->in);
 	printf("out[%3ld] : %.*s\n", \
-		token->out ? ft_strlen(token->out) : 0, \
-		token->out ? (int)ft_strlen(token->out) : 0, token->out);
+		t->out ? ft_strlen(t->out) : 0, \
+		t->out ? (int)ft_strlen(t->out) : 0, t->out);
 	printf("-------------\n");
-	printf("found: %d\n", token->opt & FOUND);
-	printf("blank: %d\n", token->opt & BLANK);
-	printf("plus : %d\n", token->opt & PLUS);
-	printf("minus: %d\n", token->opt & MINUS);
-	printf("zero : %d\n", token->opt & ZERO);
-	printf(".    : %d\n", token->opt & PREC);
-	printf("width: %u\n", token->width);
-	printf("len  : %u\n", token->length);
-	printf("type : %c\n", token->type);
+	printf("found: %d\n", t->opt & FOUND);
+	printf("blank: %d\n", t->opt & BLANK);
+	printf("plus : %d\n", t->opt & PLUS);
+	printf("minus: %d\n", t->opt & MINUS);
+	printf("zero : %d\n", t->opt & ZERO);
+	printf(".    : %d\n", t->opt & PREC);
+	printf("width: %u\n", t->width);
+	printf("len  : %u\n", t->length);
+	printf("type : %c\n", t->type);
 	printf("=============\n");
 }
 
-static int	parse_c(t_token *token, char c)
+static int	parse_c(t_token *t, char c)
 {
-	if (token->width == 0)
-		token->width = 1;
-	token->out = ft_calloc(token->width + 1, sizeof(char));
-	if (token->out == 0)
+	if (t->width == 0)
+		t->width = 1;
+	t->out = ft_calloc(t->width + 1, sizeof(char));
+	if (t->out == 0)
 		return (-1);
-	if ((token->opt & MINUS) == 0 && token->opt & ZERO)
-		ft_memset(token->out, '0', token->width);
+	if ((t->opt & MINUS) == 0 && t->opt & ZERO)
+		ft_memset(t->out, '0', t->width);
 	else
-		ft_memset(token->out, ' ', token->width);
-	if (token->opt & MINUS)
-		token->out[0] = c;
+		ft_memset(t->out, ' ', t->width);
+	if (t->opt & MINUS)
+		t->out[0] = c;
 	else
-		token->out[token->width - 1] = c;
+		t->out[t->width - 1] = c;
 	return (0);
 }
 
-static int	parse_s(t_token *token, char *s)
+static int	parse_s(t_token *t, char *s)
 {
-	if (s == 0 && token->opt & PREC && token->length < (int)ft_strlen("(null)"))
+	if (s == 0 && t->opt & PREC && t->length < (int)ft_strlen("(null)"))
 		s = "";
 	else if (s == 0)
 		s = "(null)";
-	if ((token->opt & PREC) == 0 || token->length >= (int)ft_strlen(s))
-		token->length = ft_strlen(s);
-	if (token->width < token->length)
-		token->width = token->length;
-	token->out = ft_calloc(token->width + 1, sizeof(char));
-	if (token->out == 0)
+	if ((t->opt & PREC) == 0 || t->length >= (int)ft_strlen(s))
+		t->length = ft_strlen(s);
+	if (t->width < t->length)
+		t->width = t->length;
+	t->out = ft_calloc(t->width + 1, sizeof(char));
+	if (t->out == 0)
 		return (-1);
-	if ((token->opt & MINUS) == 0 && (token->opt & ZERO))
-		ft_memset(token->out, '0', token->width);
+	if ((t->opt & MINUS) == 0 && (t->opt & ZERO))
+		ft_memset(t->out, '0', t->width);
 	else
-		ft_memset(token->out, ' ', token->width);
-	if (token->opt & MINUS)
-		ft_memcpy(token->out, s, token->length);
+		ft_memset(t->out, ' ', t->width);
+	if (t->opt & MINUS)
+		ft_memcpy(t->out, s, t->length);
 	else
-		ft_memcpy(token->out + token->width - token->length, \
-				s, token->length);
+		ft_memcpy(t->out + t->width - t->length, s, t->length);
 	return (0);
 }
 
 /* ************************************************************************** */
-static int	parse_puxX(t_token *token, unsigned long ul)
+static int	parse_puxX(t_token *t, unsigned long ul)
 {
 	char	*tmp;
 
-	if (token->type == 'p' && ul == 0)
+	if (t->type == 'p' && ul == 0)
 	{
-		token->out = ft_strdup("(nil)");
+		t->out = ft_strdup("(nil)");
 		return (0);
 	}
-	if (token->type == 'u')
+	if (t->type == 'u')
 		tmp = ft_utoa(ul, "0123456789");
 	else
 		tmp = ft_utoa(ul, "0123456789abcdef");
-	token->length = ft_strlen(tmp);
-	if (token->width < (int)ft_strlen(tmp) + (int)(2 * (token->opt & FOUND)))
-		token->width = ft_strlen(tmp) + 2 * (token->opt & FOUND);
-	token->out = ft_calloc(token->width + 1, sizeof(char));
-	if (token->out == 0)
+	t->length = ft_strlen(tmp);
+	if (t->width < (int)ft_strlen(tmp) + (int)(2 * (t->opt & FOUND)))
+		t->width = ft_strlen(tmp) + 2 * (t->opt & FOUND);
+	t->out = ft_calloc(t->width + 1, sizeof(char));
+	if (t->out == 0)
 	{
 		free(tmp);
 		return (-1);
 	}
-	if ((token->opt & MINUS) == 0 && (token->opt & ZERO))
-		ft_memset(token->out, '0', token->width);
+	if ((t->opt & MINUS) == 0 && (t->opt & ZERO))
+		ft_memset(t->out, '0', t->width);
 	else
-		ft_memset(token->out, ' ', token->width);
-	if (token->opt & MINUS)
-		ft_memcpy(token->out + 2 * (token->opt & FOUND), tmp, token->length);
+		ft_memset(t->out, ' ', t->width);
+	if (t->opt & MINUS)
+		ft_memcpy(t->out + 2 * (t->opt & FOUND), tmp, t->length);
 	else
-		ft_memcpy(token->out + token->width - token->length, \
-				tmp, token->length);
-	if ((token->opt & FOUND) && (token->opt & MINUS) && ul)
-		ft_memcpy(token->out, "0x", 2);
-	if ((token->opt & FOUND) && (token->opt & MINUS) == 0 && ul)
-		ft_memcpy(token->out + token->width - token->length - 2, "0x", 2);
+		ft_memcpy(t->out + t->width - t->length, tmp, t->length);
+	if ((t->opt & FOUND) && (t->opt & MINUS) && ul)
+		ft_memcpy(t->out, "0x", 2);
+	if ((t->opt & FOUND) && (t->opt & MINUS) == 0 && ul)
+		ft_memcpy(t->out + t->width - t->length - 2, "0x", 2);
 	free(tmp);
 	return (0);
 }
 
-static int	parse_di(t_token *token, int num)
+static int	parse_di(t_token *t, int num)
 {
 	int	flag;
 	char	*tmp;
 
 	tmp = ft_itoa(num);
-	flag = num >= 0 && (token->opt & (BLANK | PLUS));
-	if (token->width < (int)ft_strlen(tmp) + flag)
-		token->width = ft_strlen(tmp) + flag;
-	token->out = ft_calloc(token->width + 1, sizeof(char));
-	if (token->out == 0)
+	t->length = ft_strlen(tmp);
+	flag = num >= 0 && (t->opt & (BLANK | PLUS));
+	if (t->width < (int)ft_strlen(tmp) + flag)
+		t->width = ft_strlen(tmp) + flag;
+	t->out = ft_calloc(t->width + 1, sizeof(char));
+	if (t->out == 0)
 	{
 		free(tmp);
 		return (-1);
 	}
-	if ((token->opt & MINUS) == 0 && (token->opt & ZERO))
-		ft_memset(token->out, '0', token->width);
+	if ((t->opt & MINUS) == 0 && (t->opt & ZERO))
+		ft_memset(t->out, '0', t->width);
 	else
-		ft_memset(token->out, ' ', token->width);
-	if (token->opt & MINUS)
-		ft_memcpy(token->out + flag, tmp, token->length);
+		ft_memset(t->out, ' ', t->width);
+	if (t->opt & MINUS)
+		ft_memcpy(t->out + flag, tmp, t->length);
 	else
-		ft_memcpy(token->out + token->width - ft_strlen(tmp), tmp, ft_strlen(tmp));
+		ft_memcpy(t->out + t->width - ft_strlen(tmp), tmp, ft_strlen(tmp));
 	free(tmp);
 	return (0);
 }
 
-int	ft_parse_token(t_token *token, va_list ap)
+int	ft_parse_token(t_token *t, va_list ap)
 {
-	if (token == 0)
+	if (t == 0)
 		return (-1);
-	if (token->type == 0)
-		token->out = ft_strdup(token->in);
-	else if (token->type == '%')
-		token->out = ft_strdup("%");
-	else if (token->type == 'c')
-		return (parse_c(token, va_arg(ap, int)));
-	else if (token->type == 's')
-		return (parse_s(token, va_arg(ap, char *)));
-	else if (token->type == 'd' || token->type == 'i')
-		return (parse_di(token, va_arg(ap, int)));
-	else if (token->type == 'u')
-		return (parse_puxX(token, va_arg(ap, unsigned int)));
-	else if (token->type == 'x' || token->type == 'X')
-		return (parse_puxX(token, va_arg(ap, unsigned int)));
-	else if (token->type == 'p')
-		return (parse_puxX(token, va_arg(ap, unsigned long)));
-	if (token->out == 0)
+	if (t->type == 0)
+		t->out = ft_strdup(t->in);
+	else if (t->type == '%')
+		t->out = ft_strdup("%");
+	else if (t->type == 'c')
+		return (parse_c(t, va_arg(ap, int)));
+	else if (t->type == 's')
+		return (parse_s(t, va_arg(ap, char *)));
+	else if (t->type == 'd' || t->type == 'i')
+		return (parse_di(t, va_arg(ap, int)));
+	else if (t->type == 'u')
+		return (parse_puxX(t, va_arg(ap, unsigned int)));
+	else if (t->type == 'x' || t->type == 'X')
+		return (parse_puxX(t, va_arg(ap, unsigned int)));
+	else if (t->type == 'p')
+		return (parse_puxX(t, va_arg(ap, unsigned long)));
+	if (t->out == 0)
 		return (-1);
 	return (0);
 }

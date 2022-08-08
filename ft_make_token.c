@@ -6,13 +6,13 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 12:06:48 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 12:38:12 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	get_flags(char *f, t_token *token)
+static int	get_flags(char *f, t_token *t)
 {
 	int	len;
 
@@ -21,41 +21,41 @@ static int	get_flags(char *f, t_token *token)
 		|| f[len] == '+' || f[len] == '-')
 	{
 		if (f[len] == '#')
-			token->opt |= FOUND;
+			t->opt |= FOUND;
 		else if (f[len] == ' ')
-			token->opt |= BLANK;
+			t->opt |= BLANK;
 		else if (f[len] == '0')
-			token->opt |= ZERO;
+			t->opt |= ZERO;
 		else if (f[len] == '+')
-			token->opt |= PLUS;
+			t->opt |= PLUS;
 		else if (f[len] == '-')
-			token->opt |= MINUS;
+			t->opt |= MINUS;
 		++len;
 	}
 	return (len);
 }
 
-static int	get_option(char *f, t_token *token)
+static int	get_option(char *f, t_token *t)
 {
 	int	len;
 
 	if (f[0] != '%')
 		return (ft_strchr(f, '%') - f);
-	len = get_flags(f, token);
-	token->width = ft_atoi(f + len);
+	len = get_flags(f, t);
+	t->width = ft_atoi(f + len);
 	while (ft_isdigit(f[len]))
 		++len;
 	if (f[len] == '.')
 	{
-		token->opt |= PREC;
+		t->opt |= PREC;
 		++len;
-		token->length = ft_atoi(f + len);
+		t->length = ft_atoi(f + len);
 		while (ft_isdigit(f[len]))
 			++len;
 	}
-	token->type = f[len];
-	if (token->type == 'p')
-		token->opt |= FOUND;
+	t->type = f[len];
+	if (t->type == 'p')
+		t->opt |= FOUND;
 	++len;
 	return (len);
 }
@@ -64,32 +64,32 @@ t_token	*ft_make_token(void *content)
 {
 	int		len;
 	char	*fmt;
-	t_token	*token;
+	t_token	*t;
 
 	if (content == 0)
 		return (0);
-	token = ft_calloc(1, sizeof(t_token));
-	if (token == 0)
+	t = ft_calloc(1, sizeof(t_token));
+	if (t == 0)
 		return (0);
 	fmt = content;
-	len = get_option(content, token);
+	len = get_option(content, t);
 	if (len < 0)
-		token->in = ft_strdup(fmt);
+		t->in = ft_strdup(fmt);
 	else
-		token->in = ft_substr(fmt, 0, len);
-	return (token);
+		t->in = ft_substr(fmt, 0, len);
+	return (t);
 }
 
 void	ft_free_token(void *content)
 {
-	t_token	*token;
+	t_token	*t;
 
 	if (content == 0)
 		return ;
-	token = content;
-	free(token->in);
-	free(token->out);
-	token->in = 0;
-	token->out = 0;
+	t = content;
+	free(t->in);
+	free(t->out);
+	t->in = 0;
+	t->out = 0;
 	free(content);
 }
