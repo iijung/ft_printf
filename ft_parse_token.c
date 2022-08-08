@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/09 01:04:01 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/09 02:09:16 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,13 @@ static void make_out(t_token *t, char *copy)
 	t->out = ft_calloc(t->width + 1, sizeof(char));
 	if (t->out == 0)
 		return ;
+	ft_memset(t->out, ' ', t->width);
 	if (t->opt & ZERO)
 		ft_memset(t->out, '0', t->width);
-	else
-		ft_memset(t->out, ' ', t->width);
 	if (copy == 0)
 		return ;
-	if (t->type == 's')
-		len = t->precision;
-	else
+	len = t->precision;
+	if (t->type != 's')
 		len = ft_strlen(copy);
 	if (t->opt & MINUS)
 		ft_memcpy(t->out, copy, len);
