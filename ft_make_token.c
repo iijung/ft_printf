@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/06 21:08:30 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/08 06:31:45 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ static int	get_option(char *f, t_token *token)
 			++len;
 	}
 	token->opt.type = f[len];
+	if (token->opt.type == 'p')
+		token->opt.found = 1;
 	++len;
 	return (len);
 }

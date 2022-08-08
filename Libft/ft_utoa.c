@@ -6,13 +6,13 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:05:50 by minjungk          #+#    #+#             */
-/*   Updated: 2022/07/27 09:46:42 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/08 08:17:05 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	numlen(unsigned int n)
+static int	numlen(unsigned long n, int base_len)
 {
 	int	len;
 
@@ -22,26 +22,45 @@ static int	numlen(unsigned int n)
 	while (n)
 	{
 		++len;
-		n /= 10;
+		n /= base_len;
 	}
 	return (len);
 }
 
-char	*ft_utoa(unsigned int n)
+static int	baselen(char *base)
+{
+	int	len;
+
+	len = -1;
+	while (base && base[++len])
+	{
+		if (ft_strchr("+- \t\n\v\f\r", base[len]) != 0)
+			return (0);
+		if (ft_strchr(base + len + 1, base[len]) != 0)
+			return (0);
+	}
+	return (len);
+}
+
+char	*ft_utoa(unsigned long n, char *base)
 {
 	int		i;
+	int		base_len;
 	char	*rtn;
 
+	base_len = baselen(base);
+	if (base_len <= 0)
+		return (0);
 	if (n == 0)
-		return (ft_strdup("0"));
-	i = numlen(n);
+		return (ft_strdup(&base[0]));
+	i = numlen(n, base_len);
 	rtn = (char *)ft_calloc(i + 1, sizeof(char));
 	if (rtn == 0)
 		return (0);
 	while (n)
 	{
-		rtn[--i] = n % 10 + '0';
-		n /= 10;
+		rtn[--i] = base[n % base_len];
+		n /= base_len;
 	}
 	return (rtn);
 }

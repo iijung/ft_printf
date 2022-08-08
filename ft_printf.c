@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 04:45:14 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/07 02:30:35 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/08 08:48:48 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	parse_tokens(t_list *lst, va_list ap)
 	while (lst && lst->content)
 	{
 		token = lst->content;
-		if (ft_parse_token(token, ap) < 0)
+		if (ft_parse_token(token, ap) < 0 || token->out == 0)
 			return (total);
 		if (token->opt.width == 0)
 			token->opt.width = ft_strlen(token->out);
