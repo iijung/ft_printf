@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 16:12:59 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 17:23:16 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ static int	parse_number(t_token *t, va_list ap)
 		return (-1);
 	if (t->opt & PREC)
 	{
-		t->width = t->length;
+		t->width = t->length + (s[0] == '-' || (t->opt & (PLUS | BLANK)));
 		t->opt |= ZERO;
 		t->opt &= ~MINUS;
 	}
@@ -107,6 +107,11 @@ static int	parse_number(t_token *t, va_list ap)
 	if (t->width < t->length)
 		t->width = t->length;
 	make_out(t, s);
+	if (s[0] == '-' && (t->opt & ZERO))
+	{
+		t->out[t->width - t->length] = '0';
+		t->out[0] = '-';
+	}
 
 	free(s);
 	return (0);
