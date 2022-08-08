@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 19:02:07 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 19:21:53 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	ft_debug(t_token *t)
 
 static void make_out(t_token *t, char *copy)
 {
+	int	len;
 	if (t->width < t->length)
 		t->width = t->length;
 	t->out = ft_calloc(t->width + 1, sizeof(char));
@@ -49,10 +50,16 @@ static void make_out(t_token *t, char *copy)
 		ft_memset(t->out, '0', t->width);
 	else
 		ft_memset(t->out, ' ', t->width);
-	if (t->opt & MINUS)
-		ft_memcpy(t->out, copy, t->length);
+	if (copy == 0)
+		return ;
+	if (t->type == 's')
+		len = t->length;
 	else
-		ft_memcpy(t->out + t->width - t->length, copy, t->length);
+		len = ft_strlen(copy);
+	if (t->opt & MINUS)
+		ft_memcpy(t->out, copy, len);
+	else
+		ft_memcpy(t->out + t->width - len, copy, len);
 }
 
 static int	parse_text(t_token *t, va_list ap)
