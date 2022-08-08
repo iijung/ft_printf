@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 20:55:12 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/08 22:09:38 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ static void make_out(t_token *t, char *copy)
 {
 	int	len;
 
+	if (t->type != 's' && copy && t->length < (int)ft_strlen(copy))
+		t->length = ft_strlen(copy);
 	if (t->width < t->length)
 		t->width = t->length;
 	t->out = ft_calloc(t->width + 1, sizeof(char));
@@ -70,8 +72,6 @@ static int	parse_text(t_token *t, va_list ap)
 	if (t->type == 'c')
 	{
 		t->length = 1;
-		if (t->width == 0)
-			t->width = 1;
 		make_out(t, "");
 		t->out[0] = va_arg(ap, int);
 	}
@@ -84,8 +84,6 @@ static int	parse_text(t_token *t, va_list ap)
 			s = "(null)";
 		if ((t->opt & PREC) == 0 || t->length >= (int)ft_strlen(s))
 			t->length = ft_strlen(s);
-		if (t->width < t->length)
-			t->width = t->length;
 		make_out(t, s);
 	}
 	return (0);
