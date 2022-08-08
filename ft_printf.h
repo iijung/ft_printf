@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 11:03:12 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 12:38:38 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/09 00:59:44 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_token
 	char		*out;
 	char		type;
 	int			width;
-	int			length;
+	int			precision;
 	t_option	opt;
 }				t_token;
 

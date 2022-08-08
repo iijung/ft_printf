@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 22:09:38 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/09 01:04:01 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_debug(t_token *t)
 	printf("zero : %d\n", t->opt & ZERO);
 	printf(".    : %d\n", t->opt & PREC);
 	printf("width: %u\n", t->width);
-	printf("len  : %u\n", t->length);
+	printf("len  : %u\n", t->precision);
 	printf("type : %c\n", t->type);
 	printf("=============\n");
 }
@@ -42,10 +42,10 @@ static void make_out(t_token *t, char *copy)
 {
 	int	len;
 
-	if (t->type != 's' && copy && t->length < (int)ft_strlen(copy))
-		t->length = ft_strlen(copy);
-	if (t->width < t->length)
-		t->width = t->length;
+	if (t->type != 's' && copy && t->precision < (int)ft_strlen(copy))
+		t->precision = ft_strlen(copy);
+	if (t->width < t->precision)
+		t->width = t->precision;
 	t->out = ft_calloc(t->width + 1, sizeof(char));
 	if (t->out == 0)
 		return ;
@@ -56,7 +56,7 @@ static void make_out(t_token *t, char *copy)
 	if (copy == 0)
 		return ;
 	if (t->type == 's')
-		len = t->length;
+		len = t->precision;
 	else
 		len = ft_strlen(copy);
 	if (t->opt & MINUS)
@@ -71,19 +71,19 @@ static int	parse_text(t_token *t, va_list ap)
 
 	if (t->type == 'c')
 	{
-		t->length = 1;
+		t->precision = 1;
 		make_out(t, "");
 		t->out[0] = va_arg(ap, int);
 	}
 	else if (t->type == 's')
 	{
 		s = va_arg(ap, char *);
-		if (s == 0 && t->opt & PREC && t->length < (int)ft_strlen("(null)"))
+		if (s == 0 && t->opt & PREC && t->precision < (int)ft_strlen("(null)"))
 			s = "";
 		else if (s == 0)
 			s = "(null)";
-		if ((t->opt & PREC) == 0 || t->length >= (int)ft_strlen(s))
-			t->length = ft_strlen(s);
+		if ((t->opt & PREC) == 0 || t->precision >= (int)ft_strlen(s))
+			t->precision = ft_strlen(s);
 		make_out(t, s);
 	}
 	return (0);
@@ -101,15 +101,15 @@ static int	parse_number(t_token *t, va_list ap)
 		return (-1);
 	if (t->opt & PREC)
 	{
-		t->width = t->length + (s[0] == '-' || (t->opt & (PLUS | BLANK)));
+		t->width = t->precision + (s[0] == '-' || (t->opt & (PLUS | BLANK)));
 		t->opt |= ZERO;
 		t->opt &= ~MINUS;
 	}
-	t->length = ft_strlen(s);
+	t->precision = ft_strlen(s);
 	make_out(t, s);
 	if (s[0] == '-' && (t->opt & ZERO))
 	{
-		t->out[t->width - t->length] = '0';
+		t->out[t->width - t->precision] = '0';
 		t->out[0] = '-';
 	}
 
@@ -130,7 +130,7 @@ static int	parse_pxX(t_token *t, unsigned long ul)
 		return (0);
 	}
 	tmp = ft_utoa(ul, "0123456789abcdef");
-	t->length = ft_strlen(tmp);
+	t->precision = ft_strlen(tmp);
 	if (t->width < (int)ft_strlen(tmp) + (int)(2 * (t->opt & FOUND)))
 		t->width = ft_strlen(tmp) + 2 * (t->opt & FOUND);
 	t->out = ft_calloc(t->width + 1, sizeof(char));
@@ -144,13 +144,13 @@ static int	parse_pxX(t_token *t, unsigned long ul)
 	else
 		ft_memset(t->out, ' ', t->width);
 	if (t->opt & MINUS)
-		ft_memcpy(t->out + 2 * (t->opt & FOUND), tmp, t->length);
+		ft_memcpy(t->out + 2 * (t->opt & FOUND), tmp, t->precision);
 	else
-		ft_memcpy(t->out + t->width - t->length, tmp, t->length);
+		ft_memcpy(t->out + t->width - t->precision, tmp, t->precision);
 	if ((t->opt & FOUND) && (t->opt & MINUS) && ul)
 		ft_memcpy(t->out, "0x", 2);
 	if ((t->opt & FOUND) && (t->opt & MINUS) == 0 && ul)
-		ft_memcpy(t->out + t->width - t->length - 2, "0x", 2);
+		ft_memcpy(t->out + t->width - t->precision - 2, "0x", 2);
 	free(tmp);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 15:32:21 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/09 01:00:07 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	get_option(char *f, t_token *t)
 	{
 		t->opt |= PREC;
 		++len;
-		t->length = ft_atoi(f + len);
+		t->precision = ft_atoi(f + len);
 		while (ft_isdigit(f[len]))
 			++len;
 	}
