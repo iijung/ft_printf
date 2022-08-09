@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/10 05:57:32 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/10 07:45:42 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ static int	parse_number(t_token *t, char *s)
 		flag = ' ';
 	else
 		flag = 0;
-	if (t->precision < (int)ft_strlen(s))
+	if (t->precision < (int)ft_strlen(s) && !(t->opt & PREC))
 		t->precision = (int)ft_strlen(s);
 	if (flag)
 		t->precision += (flag != '-' || (t->opt & PREC));
