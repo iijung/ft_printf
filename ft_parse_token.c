@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/09 21:48:03 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/10 01:21:51 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,41 +121,28 @@ static int	parse_number(t_token *t, char *s)
 	return (0);
 }
 
-
-/* ************************************************************************** */
-static int	parse_pxX(t_token *t, unsigned long ul)
+static int	parse_pxX(t_token *t, char *s)
 {
-	char	*tmp;
-
-	if (t->type == 'p' && ul == 0)
+	if (s == 0)
+		return (-1);
+	if (t->type == 'p' && s[0] == '0')
 	{
-		t->width = ft_strlen("(nil)");
-		t->out = ft_strdup("(nil)");
+		make_out(t, "(nil)");
+		free(s);
 		return (0);
 	}
-	tmp = ft_utoa(ul, "0123456789abcdef");
-	t->precision = ft_strlen(tmp);
-	if (t->width < (int)ft_strlen(tmp) + (int)(2 * (t->opt & FOUND)))
-		t->width = ft_strlen(tmp) + 2 * (t->opt & FOUND);
-	t->out = ft_calloc(t->width + 1, sizeof(char));
-	if (t->out == 0)
-	{
-		free(tmp);
-		return (-1);
-	}
-	if (t->opt & ZERO)
-		ft_memset(t->out, '0', t->width);
-	else
-		ft_memset(t->out, ' ', t->width);
-	if (t->opt & MINUS)
-		ft_memcpy(t->out + 2 * (t->opt & FOUND), tmp, t->precision);
-	else
-		ft_memcpy(t->out + t->width - t->precision, tmp, t->precision);
-	if ((t->opt & FOUND) && (t->opt & MINUS) && ul)
+	t->precision = ft_strlen(s);
+	if (t->opt & FOUND)
+		t->precision += 1 + (1 && s[0] != '0');
+	make_out(t, s);
+	if ((t->opt & FOUND) && (t->opt & MINUS))
 		ft_memcpy(t->out, "0x", 2);
-	if ((t->opt & FOUND) && (t->opt & MINUS) == 0 && ul)
-		ft_memcpy(t->out + t->width - t->precision - 2, "0x", 2);
-	free(tmp);
+	if ((t->opt & FOUND) && !(t->opt & MINUS))
+		ft_memcpy(t->out + t->width - t->precision, "0x", 2);
+	int len = -1;
+	while (t->type == 'X' && t->out[++len])
+		t->out[len] = ft_toupper(t->out[len]);
+	free(s);
 	return (0);
 }
 
@@ -174,9 +161,9 @@ int	ft_parse_token(t_token *t, va_list ap)
 	else if (t->type == 'u')
 		return (parse_number(t, ft_utoa(va_arg(ap, unsigned int), "0123456789")));
 	else if (t->type == 'x' || t->type == 'X')
-		return (parse_pxX(t, va_arg(ap, unsigned int)));
+		return (parse_pxX(t, ft_utoa(va_arg(ap, unsigned int), "0123456789abcdef")));
 	else if (t->type == 'p')
-		return (parse_pxX(t, va_arg(ap, unsigned long)));
+		return (parse_pxX(t, ft_utoa(va_arg(ap, unsigned long), "0123456789abcdef")));
 	if (t->out == 0)
 		return (-1);
 	return (0);
