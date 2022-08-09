@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/10 01:21:51 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/10 01:26:05 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,14 +133,14 @@ static int	parse_pxX(t_token *t, char *s)
 	}
 	t->precision = ft_strlen(s);
 	if (t->opt & FOUND)
-		t->precision += 1 + (1 && s[0] != '0');
+		t->precision += 2 * (1 && s[0] != '0');
 	make_out(t, s);
 	if ((t->opt & FOUND) && (t->opt & MINUS))
 		ft_memcpy(t->out, "0x", 2);
 	if ((t->opt & FOUND) && !(t->opt & MINUS))
 		ft_memcpy(t->out + t->width - t->precision, "0x", 2);
 	int len = -1;
-	while (t->type == 'X' && t->out[++len])
+	while (s[0] != '0' && t->type == 'X' && t->out[++len])
 		t->out[len] = ft_toupper(t->out[len]);
 	free(s);
 	return (0);
