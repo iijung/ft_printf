@@ -6,39 +6,13 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/11 07:14:34 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/11 07:21:40 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-#include <stdio.h>
-
-void	ft_debug(t_token *t)
-{
-	if (t == 0)
-		return ;
-	printf("=== debug ===\n");
-	printf("in [%3ld] : %.*s\n", \
-		t->in ? ft_strlen(t->in) : 0, \
-		t->in ? (int)ft_strlen(t->in) : 0, t->in);
-	printf("out[%3ld] : %.*s\n", \
-		t->out ? ft_strlen(t->out) : 0, \
-		t->out ? (int)ft_strlen(t->out) : 0, t->out);
-	printf("-------------\n");
-	printf("found: %d\n", t->opt & FOUND);
-	printf("blank: %d\n", t->opt & BLANK);
-	printf("plus : %d\n", t->opt & PLUS);
-	printf("minus: %d\n", t->opt & MINUS);
-	printf("zero : %d\n", t->opt & ZERO);
-	printf(".    : %d\n", t->opt & PREC);
-	printf("width: %u\n", t->width);
-	printf("prec : %u\n", t->precision);
-	printf("type : %c\n", t->type);
-	printf("=============\n");
-}
-
-static void make_out(t_token *t, char *copy)
+static void	make_out(t_token *t, char *copy)
 {
 	int	len;
 
@@ -129,8 +103,10 @@ static int	parse_number(t_token *t, char *s)
 	return (0);
 }
 
-static int	parse_pxX(t_token *t, char *s)
+static int	parse_hex(t_token *t, char *s)
 {
+	int	len;
+
 	if (s == 0)
 		return (-1);
 	if (t->type == 'p' && s[0] == '0')
@@ -145,7 +121,6 @@ static int	parse_pxX(t_token *t, char *s)
 		free(s);
 		return (0);
 	}
-
 	if (!(t->opt & PREC))
 		t->precision = ft_strlen(s) + 2 * ((t->opt & FOUND) && s[0] != '0');
 	make_out(t, s);
@@ -153,7 +128,7 @@ static int	parse_pxX(t_token *t, char *s)
 		ft_memcpy(t->out, "0x", 2);
 	if ((t->opt & FOUND) && !(t->opt & MINUS))
 		ft_memcpy(t->out + t->width - t->precision, "0x", 2);
-	int len = -1;
+	len = -1;
 	while (s[0] != '0' && t->type == 'X' && t->out[++len])
 		t->out[len] = ft_toupper(t->out[len]);
 	free(s);
@@ -175,9 +150,9 @@ int	ft_parse_token(t_token *t, va_list ap)
 	else if (t->type == 'u')
 		return (parse_number(t, ft_utoa(va_arg(ap, unsigned int), "0123456789")));
 	else if (t->type == 'x' || t->type == 'X')
-		return (parse_pxX(t, ft_utoa(va_arg(ap, unsigned int), "0123456789abcdef")));
+		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned int), "0123456789abcdef")));
 	else if (t->type == 'p')
-		return (parse_pxX(t, ft_utoa(va_arg(ap, unsigned long), "0123456789abcdef")));
+		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned long), "0123456789abcdef")));
 	if (t->out == 0)
 		return (-1);
 	return (0);
