@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/11 07:21:40 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/11 07:40:09 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,9 @@ static int	parse_hex(t_token *t, char *s)
 
 int	ft_parse_token(t_token *t, va_list ap)
 {
+	const char	*dec = "0123456789";
+	const char	*hex = "0123456789abcdef";
+
 	if (t == 0)
 		return (-1);
 	if (t->type == 0)
@@ -148,11 +151,11 @@ int	ft_parse_token(t_token *t, va_list ap)
 	else if (t->type == 'd' || t->type == 'i')
 		return (parse_number(t, ft_itoa(va_arg(ap, int))));
 	else if (t->type == 'u')
-		return (parse_number(t, ft_utoa(va_arg(ap, unsigned int), "0123456789")));
+		return (parse_number(t, ft_utoa(va_arg(ap, unsigned int), dec)));
 	else if (t->type == 'x' || t->type == 'X')
-		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned int), "0123456789abcdef")));
+		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned int), hex)));
 	else if (t->type == 'p')
-		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned long), "0123456789abcdef")));
+		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned long), hex)));
 	if (t->out == 0)
 		return (-1);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/04 20:08:26 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 06:46:49 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/11 07:41:14 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	*ft_calloc(size_t count, size_t size);
 
 /*	part2	*/
 char	*ft_itoa(int n);
-char	*ft_utoa(unsigned long n, char *base);
+char	*ft_utoa(unsigned long n, const char *base);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_substr(char const *s, unsigned int start, size_t len);

@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:05:50 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/08 16:00:59 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/11 07:41:35 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	numlen(unsigned long n, int base_len)
 	return (len);
 }
 
-static int	baselen(char *base)
+static int	baselen(const char *base)
 {
 	int	len;
 
@@ -42,7 +42,7 @@ static int	baselen(char *base)
 	return (len);
 }
 
-char	*ft_utoa(unsigned long n, char *base)
+char	*ft_utoa(unsigned long n, const char *base)
 {
 	int		i;
 	int		base_len;
