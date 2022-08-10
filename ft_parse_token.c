@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/10 10:46:33 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/11 07:14:34 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ static void make_out(t_token *t, char *copy)
 
 	if (t->type != 's' && copy && t->precision < (int)ft_strlen(copy))
 		t->precision = ft_strlen(copy);
+	if (t->opt & (PLUS | BLANK))
+		t->precision += 1;
 	if (t->width < t->precision)
 		t->width = t->precision;
 	t->out = ft_calloc(t->width + 1, sizeof(char));
@@ -73,9 +75,11 @@ static int	parse_text(t_token *t, va_list ap)
 
 	if (t->type == 'c')
 	{
-		t->precision = 1;
-		make_out(t, "");
-		t->out[0] = va_arg(ap, int);
+		make_out(t, " ");
+		if (t->opt & MINUS)
+			t->out[0] = va_arg(ap, int);
+		else
+			t->out[t->width - 1] = va_arg(ap, int);
 	}
 	else if (t->type == 's')
 	{
@@ -111,10 +115,8 @@ static int	parse_number(t_token *t, char *s)
 		flag = ' ';
 	else
 		flag = 0;
-	if (t->precision < (int)ft_strlen(s) && !(t->opt & PREC))
-		t->precision = (int)ft_strlen(s);
-	if (flag)
-		t->precision += (flag != '-' || (t->opt & PREC));
+	if (s[0] == '-')
+		t->opt |= BLANK;
 	if (s[0] == '-')
 		make_out(t, s + 1);
 	else
