@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/10 07:45:42 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/10 10:46:33 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void make_out(t_token *t, char *copy)
 	if (t->out == 0)
 		return ;
 	ft_memset(t->out, ' ', t->width);
-	if (t->opt & ZERO)
+	if ((t->opt & ZERO) && !(t->opt & PREC))
 		t->precision = t->width;
 	if (t->opt & MINUS)
 		ft_memset(t->out, '0', t->precision);
@@ -97,6 +97,12 @@ static int	parse_number(t_token *t, char *s)
 
 	if (s == 0)
 		return (-1);
+	if (s[0] == '0' && (t->opt & PREC))
+	{
+		make_out(t, 0);
+		free(s);
+		return (0);
+	}
 	if (s[0] == '-')
 		flag = '-';
 	else if (t->opt & PLUS)
@@ -131,10 +137,15 @@ static int	parse_pxX(t_token *t, char *s)
 		free(s);
 		return (0);
 	}
+	if (s[0] == '0' && (t->opt & PREC) && t->precision < (int)ft_strlen(s))
+	{
+		make_out(t, 0);
+		free(s);
+		return (0);
+	}
+
 	if (!(t->opt & PREC))
-		t->precision = ft_strlen(s);
-	if (t->opt & FOUND)
-		t->precision += 2 * (1 && s[0] != '0');
+		t->precision = ft_strlen(s) + 2 * ((t->opt & FOUND) && s[0] != '0');
 	make_out(t, s);
 	if ((t->opt & FOUND) && (t->opt & MINUS))
 		ft_memcpy(t->out, "0x", 2);
