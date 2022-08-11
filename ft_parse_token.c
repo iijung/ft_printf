@@ -6,18 +6,16 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/11 07:40:09 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/11 13:22:55 by iijung           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	make_out(t_token *t, char *copy)
+static void	make_out(t_token *t, char *copy, int copy_len)
 {
-	int	len;
-
-	if (t->type != 's' && copy && t->precision < (int)ft_strlen(copy))
-		t->precision = ft_strlen(copy);
+	if (t->type != 's' && copy && t->precision < copy_len)
+		t->precision = copy_len;
 	if (t->opt & (PLUS | BLANK))
 		t->precision += 1;
 	if (t->width < t->precision)
@@ -34,13 +32,12 @@ static void	make_out(t_token *t, char *copy)
 		ft_memset(t->out + t->width - t->precision, '0', t->precision);
 	if (copy == 0)
 		return ;
-	len = t->precision;
-	if (t->type != 's')
-		len = ft_strlen(copy);
+	if (t->type == 's')
+		copy_len = t->precision;
 	if (t->opt & MINUS)
-		ft_memcpy(t->out + t->precision - len, copy, len);
+		ft_memcpy(t->out + t->precision - copy_len, copy, copy_len);
 	else
-		ft_memcpy(t->out + t->width - len, copy, len);
+		ft_memcpy(t->out + t->width - copy_len, copy, copy_len);
 }
 
 static int	parse_text(t_token *t, va_list ap)
@@ -49,7 +46,7 @@ static int	parse_text(t_token *t, va_list ap)
 
 	if (t->type == 'c')
 	{
-		make_out(t, " ");
+		make_out(t, " ", 1);
 		if (t->opt & MINUS)
 			t->out[0] = va_arg(ap, int);
 		else
@@ -64,7 +61,7 @@ static int	parse_text(t_token *t, va_list ap)
 			s = "(null)";
 		if ((t->opt & PREC) == 0 || t->precision >= (int)ft_strlen(s))
 			t->precision = ft_strlen(s);
-		make_out(t, s);
+		make_out(t, s, ft_strlen(s));
 	}
 	return (0);
 }
@@ -77,7 +74,7 @@ static int	parse_number(t_token *t, char *s)
 		return (-1);
 	if (s[0] == '0' && (t->opt & PREC))
 	{
-		make_out(t, 0);
+		make_out(t, 0, 0);
 		free(s);
 		return (0);
 	}
@@ -92,9 +89,9 @@ static int	parse_number(t_token *t, char *s)
 	if (s[0] == '-')
 		t->opt |= BLANK;
 	if (s[0] == '-')
-		make_out(t, s + 1);
+		make_out(t, s + 1, ft_strlen(s + 1));
 	else
-		make_out(t, s);
+		make_out(t, s, ft_strlen(s));
 	if (flag && t->opt & MINUS)
 		t->out[0] = flag;
 	else if (flag)
@@ -111,19 +108,19 @@ static int	parse_hex(t_token *t, char *s)
 		return (-1);
 	if (t->type == 'p' && s[0] == '0')
 	{
-		make_out(t, "(nil)");
+		make_out(t, "(nil)", ft_strlen("(nil)"));
 		free(s);
 		return (0);
 	}
 	if (s[0] == '0' && (t->opt & PREC) && t->precision < (int)ft_strlen(s))
 	{
-		make_out(t, 0);
+		make_out(t, 0, 0);
 		free(s);
 		return (0);
 	}
 	if (!(t->opt & PREC))
 		t->precision = ft_strlen(s) + 2 * ((t->opt & FOUND) && s[0] != '0');
-	make_out(t, s);
+	make_out(t, s, ft_strlen(s));
 	if ((t->opt & FOUND) && (t->opt & MINUS))
 		ft_memcpy(t->out, "0x", 2);
 	if ((t->opt & FOUND) && !(t->opt & MINUS))
