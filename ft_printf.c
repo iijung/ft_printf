@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 04:45:14 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/09 01:41:12 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/13 01:00:39 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	ft_printf(const char *format, ...)
 	int		total;
 	va_list	ap;
 
-	total = -1;
+	total = 0;
 	va_start(ap, format);
 	head = ft_make_tokens(format);
 	if (head)

@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/11 13:22:55 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/13 01:02:48 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ static void	make_out(t_token *t, char *copy, int copy_len)
 {
 	if (t->type != 's' && copy && t->precision < copy_len)
 		t->precision = copy_len;
+	if (t->opt & FOUND)
+		t->precision += 2;
 	if (t->opt & (PLUS | BLANK))
 		t->precision += 1;
 	if (t->width < t->precision)
@@ -44,7 +46,9 @@ static int	parse_text(t_token *t, va_list ap)
 {
 	char	*s;
 
-	if (t->type == 'c')
+	if (t->type == '%')
+		make_out(t, "%", 1);
+	else if (t->type == 'c')
 	{
 		make_out(t, " ", 1);
 		if (t->opt & MINUS)
@@ -55,9 +59,7 @@ static int	parse_text(t_token *t, va_list ap)
 	else if (t->type == 's')
 	{
 		s = va_arg(ap, char *);
-		if (s == 0 && t->opt & PREC && t->precision < (int)ft_strlen("(null)"))
-			s = "";
-		else if (s == 0)
+		if (s == 0)
 			s = "(null)";
 		if ((t->opt & PREC) == 0 || t->precision >= (int)ft_strlen(s))
 			t->precision = ft_strlen(s);
@@ -72,12 +74,6 @@ static int	parse_number(t_token *t, char *s)
 
 	if (s == 0)
 		return (-1);
-	if (s[0] == '0' && (t->opt & PREC))
-	{
-		make_out(t, 0, 0);
-		free(s);
-		return (0);
-	}
 	if (s[0] == '-')
 		flag = '-';
 	else if (t->opt & PLUS)
@@ -106,20 +102,13 @@ static int	parse_hex(t_token *t, char *s)
 
 	if (s == 0)
 		return (-1);
-	if (t->type == 'p' && s[0] == '0')
+	if (s[0] == '0' && (t->type != 'p'))
 	{
-		make_out(t, "(nil)", ft_strlen("(nil)"));
+		t->opt &= ~FOUND;
+		make_out(t, s, ft_strlen(s));
 		free(s);
 		return (0);
 	}
-	if (s[0] == '0' && (t->opt & PREC) && t->precision < (int)ft_strlen(s))
-	{
-		make_out(t, 0, 0);
-		free(s);
-		return (0);
-	}
-	if (!(t->opt & PREC))
-		t->precision = ft_strlen(s) + 2 * ((t->opt & FOUND) && s[0] != '0');
 	make_out(t, s, ft_strlen(s));
 	if ((t->opt & FOUND) && (t->opt & MINUS))
 		ft_memcpy(t->out, "0x", 2);
@@ -141,9 +130,7 @@ int	ft_parse_token(t_token *t, va_list ap)
 		return (-1);
 	if (t->type == 0)
 		t->out = ft_strdup(t->in);
-	else if (t->type == '%')
-		t->out = ft_strdup("%");
-	else if (t->type == 'c' || t->type == 's')
+	else if (t->type == '%' || t->type == 'c' || t->type == 's')
 		return (parse_text(t, ap));
 	else if (t->type == 'd' || t->type == 'i')
 		return (parse_number(t, ft_itoa(va_arg(ap, int))));
