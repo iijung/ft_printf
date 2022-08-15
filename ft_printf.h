@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 11:03:12 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/09 01:40:31 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/15 20:37:00 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_token
 
 void	ft_free_token(void *content);
 t_token	*ft_make_token(void *content);
-t_list	*ft_make_tokens(const char *format);
+int		ft_make_tokens(t_list **head, const char *format);
 int		ft_parse_token(t_token *t, va_list ap);
 
 int		ft_printf(const char *format, ...);

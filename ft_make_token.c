@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/09 02:41:42 by iijung           ###   ########.fr       */
+/*   Updated: 2022/08/15 22:40:14 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,28 +83,27 @@ t_token	*ft_make_token(void *content)
 	return (t);
 }
 
-t_list	*ft_make_tokens(const char *format)
+int	ft_make_tokens(t_list **head, const char *format)
 {
-	t_list		*head;
 	t_list		*tmp;
 	t_token		*token;
 	size_t		len;
 
-	head = 0;
 	len = 0;
 	while (format && format[len])
 	{
 		token = ft_make_token((char *)format + len);
 		if (token == 0)
-			break ;
+			return (-1);
 		tmp = ft_lstnew(token);
 		if (tmp == 0 || token->in == 0)
 		{
+			free(tmp);
 			ft_free_token(token);
-			break ;
+			return (-1);
 		}
-		ft_lstadd_back(&head, tmp);
+		ft_lstadd_back(head, tmp);
 		len += ft_strlen(token->in);
 	}
-	return (head);
+	return (0);
 }

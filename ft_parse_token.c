@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/15 19:23:04 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/15 20:51:01 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ static int	parse_text(t_token *t, va_list ap)
 	else if (t->type == 'c')
 	{
 		make_out(t, " ", 1);
+		if (t->out == 0)
+			return (-1);
 		if (t->opt & MINUS)
 			t->out[0] = va_arg(ap, int);
 		else
@@ -90,6 +92,11 @@ static int	parse_number(t_token *t, char *s)
 		make_out(t, s + 1, ft_strlen(s + 1));
 	else
 		make_out(t, s, ft_strlen(s));
+	if (t->out == 0)
+	{
+		free(s);
+		return (-1);
+	}
 	if (flag && t->opt & MINUS)
 		t->out[0] = flag;
 	else if (flag)
@@ -115,6 +122,11 @@ static int	parse_hex(t_token *t, char *s)
 		return (0);
 	}
 	make_out(t, s, ft_strlen(s));
+	if (t->out == 0)
+	{
+		free(s);
+		return (-1);
+	}
 	if ((t->opt & FOUND) && (t->opt & MINUS))
 		ft_memcpy(t->out, "0x", 2);
 	if ((t->opt & FOUND) && !(t->opt & MINUS))
@@ -133,9 +145,7 @@ int	ft_parse_token(t_token *t, va_list ap)
 
 	if (t == 0)
 		return (-1);
-	if (t->type == 0)
-		t->out = ft_strdup(t->in);
-	else if (t->type == '%' || t->type == 'c' || t->type == 's')
+	if (t->type == '%' || t->type == 'c' || t->type == 's')
 		return (parse_text(t, ap));
 	else if (t->type == 'd' || t->type == 'i')
 		return (parse_number(t, ft_itoa(va_arg(ap, int))));
@@ -145,6 +155,8 @@ int	ft_parse_token(t_token *t, va_list ap)
 		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned int), hex)));
 	else if (t->type == 'p')
 		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned long), hex)));
+	else
+		t->out = ft_strdup(t->in);
 	if (t->out == 0)
 		return (-1);
 	return (0);
