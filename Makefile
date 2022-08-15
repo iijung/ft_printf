@@ -6,12 +6,12 @@
 #    By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/17 03:49:45 by minjungk          #+#    #+#              #
-#    Updated: 2022/08/07 02:25:06 by minjungk         ###   ########.fr        #
+#    Updated: 2022/08/15 19:35:37 by minjungk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ARFLAGS = rsc
-CFLAGS = -Wall -Wextra -Werror -I. -I./Libft  -g3 # -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -I. -I./Libft
 
 LIBFT = ./Libft/libft.a
 
@@ -34,7 +34,7 @@ $(NAME): $(OBJS)
 
 clean:
 	$(MAKE) -C Libft clean
-	$(RM) $(OBJS) $(OBJS_B)
+	$(RM) $(OBJS)
 
 fclean: clean
 	$(MAKE) -C Libft fclean
@@ -44,12 +44,3 @@ re: fclean
 	$(MAKE) all
 
 .PHONY: all clean fclean re bonus
-
-
-LD_FLAGS = -I./Libft -L. -lftprintf
-test: $(NAME)
-	@$(RM) a.out
-	$(CC) $(CFLAGS) main.c $(LD_FLAGS)
-#	$(CC) main.c $(LD_FLAGS)
-	@./a.out | cat -e
-

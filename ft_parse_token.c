@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/13 01:02:48 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/15 19:23:04 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,9 @@ static int	parse_number(t_token *t, char *s)
 		flag = 0;
 	if (s[0] == '-')
 		t->opt |= BLANK;
-	if (s[0] == '-')
+	if (s[0] == '0' && (t->opt & PREC) && (t->precision < 1))
+		make_out(t, "", 0);
+	else if (s[0] == '-')
 		make_out(t, s + 1, ft_strlen(s + 1));
 	else
 		make_out(t, s, ft_strlen(s));
@@ -105,7 +107,10 @@ static int	parse_hex(t_token *t, char *s)
 	if (s[0] == '0' && (t->type != 'p'))
 	{
 		t->opt &= ~FOUND;
-		make_out(t, s, ft_strlen(s));
+		if ((t->opt & PREC) && (t->precision < 1))
+			make_out (t, "", 0);
+		else
+			make_out(t, s, ft_strlen(s));
 		free(s);
 		return (0);
 	}
