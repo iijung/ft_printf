@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/15 20:51:01 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/16 00:03:47 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@ static void	make_out(t_token *t, char *copy, int copy_len)
 {
 	if (t->type != 's' && copy && t->precision < copy_len)
 		t->precision = copy_len;
-	if (t->opt & FOUND)
-		t->precision += 2;
-	if (t->opt & (PLUS | BLANK))
-		t->precision += 1;
+	t->precision += 2 * (1 && (t->opt & FOUND));
+	t->precision += 1 * (1 && (t->opt & (PLUS | BLANK)));
 	if (t->width < t->precision)
 		t->width = t->precision;
 	t->out = ft_calloc(t->width + 1, sizeof(char));
@@ -70,20 +68,10 @@ static int	parse_text(t_token *t, va_list ap)
 	return (0);
 }
 
-static int	parse_number(t_token *t, char *s)
+static int	parse_number(t_token *t, char *s, char flag)
 {
-	char	flag;
-
 	if (s == 0)
 		return (-1);
-	if (s[0] == '-')
-		flag = '-';
-	else if (t->opt & PLUS)
-		flag = '+';
-	else if (t->opt & BLANK)
-		flag = ' ';
-	else
-		flag = 0;
 	if (s[0] == '-')
 		t->opt |= BLANK;
 	if (s[0] == '0' && (t->opt & PREC) && (t->precision < 1))
@@ -92,15 +80,19 @@ static int	parse_number(t_token *t, char *s)
 		make_out(t, s + 1, ft_strlen(s + 1));
 	else
 		make_out(t, s, ft_strlen(s));
-	if (t->out == 0)
+	if (t->out)
 	{
-		free(s);
-		return (-1);
+		if (s[0] == '-')
+			flag = '-';
+		else if (t->opt & PLUS)
+			flag = '+';
+		else if (t->opt & BLANK)
+			flag = ' ';
+		if (flag && t->opt & MINUS)
+			t->out[0] = flag;
+		else if (flag)
+			t->out[t->width - t->precision] = flag;
 	}
-	if (flag && t->opt & MINUS)
-		t->out[0] = flag;
-	else if (flag)
-		t->out[t->width - t->precision] = flag;
 	free(s);
 	return (0);
 }
@@ -111,29 +103,24 @@ static int	parse_hex(t_token *t, char *s)
 
 	if (s == 0)
 		return (-1);
+	len = ft_strlen(s);
 	if (s[0] == '0' && (t->type != 'p'))
 	{
 		t->opt &= ~FOUND;
 		if ((t->opt & PREC) && (t->precision < 1))
-			make_out (t, "", 0);
-		else
-			make_out(t, s, ft_strlen(s));
-		free(s);
-		return (0);
+			len = 0;
 	}
-	make_out(t, s, ft_strlen(s));
-	if (t->out == 0)
+	make_out(t, s, len);
+	if (t->out)
 	{
-		free(s);
-		return (-1);
+		if ((t->opt & FOUND) && (t->opt & MINUS))
+			ft_memcpy(t->out, "0x", 2);
+		if ((t->opt & FOUND) && !(t->opt & MINUS))
+			ft_memcpy(t->out + t->width - t->precision, "0x", 2);
+		len = -1;
+		while (s[0] != '0' && t->type == 'X' && t->out[++len])
+			t->out[len] = ft_toupper(t->out[len]);
 	}
-	if ((t->opt & FOUND) && (t->opt & MINUS))
-		ft_memcpy(t->out, "0x", 2);
-	if ((t->opt & FOUND) && !(t->opt & MINUS))
-		ft_memcpy(t->out + t->width - t->precision, "0x", 2);
-	len = -1;
-	while (s[0] != '0' && t->type == 'X' && t->out[++len])
-		t->out[len] = ft_toupper(t->out[len]);
 	free(s);
 	return (0);
 }
@@ -148,9 +135,9 @@ int	ft_parse_token(t_token *t, va_list ap)
 	if (t->type == '%' || t->type == 'c' || t->type == 's')
 		return (parse_text(t, ap));
 	else if (t->type == 'd' || t->type == 'i')
-		return (parse_number(t, ft_itoa(va_arg(ap, int))));
+		return (parse_number(t, ft_itoa(va_arg(ap, int)), 0));
 	else if (t->type == 'u')
-		return (parse_number(t, ft_utoa(va_arg(ap, unsigned int), dec)));
+		return (parse_number(t, ft_utoa(va_arg(ap, unsigned int), dec), 0));
 	else if (t->type == 'x' || t->type == 'X')
 		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned int), hex)));
 	else if (t->type == 'p')
