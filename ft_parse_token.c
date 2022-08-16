@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/16 00:03:47 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/08/16 11:31:26 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ static int	parse_text(t_token *t, va_list ap)
 			s = "(null)";
 		if ((t->opt & PREC) == 0 || t->precision >= (int)ft_strlen(s))
 			t->precision = ft_strlen(s);
-		make_out(t, s, ft_strlen(s));
+		if (ft_strlen(s) <= 2147483647)
+			make_out(t, s, ft_strlen(s));
 	}
 	return (0);
 }
