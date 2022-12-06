@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 11:03:12 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/15 20:37:00 by minjungk         ###   ########.fr       */
+/*   Updated: 2022/12/06 22:36:55 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_token
 	t_option	opt;
 }				t_token;
 
+char	*ft_utoa(unsigned long n, const char *base);
 void	ft_free_token(void *content);
 t_token	*ft_make_token(void *content);
 int		ft_make_tokens(t_list **head, const char *format);
