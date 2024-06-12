@@ -6,11 +6,13 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/16 11:31:26 by minjungk         ###   ########.fr       */
+/*   Updated: 2024/06/13 03:25:07 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+extern char	*ft_utoa(unsigned long n, const char *base);
 
 static void	make_out(t_token *t, char *copy, int copy_len)
 {

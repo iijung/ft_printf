@@ -6,11 +6,16 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 04:45:14 by minjungk          #+#    #+#             */
-/*   Updated: 2022/08/15 20:42:41 by minjungk         ###   ########.fr       */
+/*   Updated: 2024/06/13 03:24:59 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+extern void		ft_free_token(void *content);
+extern t_token	*ft_make_token(void *content);
+extern int		ft_make_tokens(t_list **head, const char *format);
+extern int		ft_parse_token(t_token *t, va_list ap);
 
 static int	parse_tokens(t_list *lst, va_list ap)
 {
