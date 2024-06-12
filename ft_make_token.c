@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 02:45:22 by minjungk          #+#    #+#             */
-/*   Updated: 2024/06/13 03:37:31 by minjungk         ###   ########.fr       */
+/*   Updated: 2024/06/13 04:46:06 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	ft_free_token(void *content)
 	free(content);
 }
 
-static int	get_option(char *f, t_token *t, int len)
+static int	get_option(const char *f, t_token *t, int len)
 {
 	while (ft_strchr("# 0+-", f[len]) != NULL)
 	{
@@ -52,19 +52,17 @@ static int	get_option(char *f, t_token *t, int len)
 	return (len);
 }
 
-static t_token	*ft_make_token(void *content)
+t_token	*ft_make_token(const char *fmt)
 {
 	int				len;
-	char			*fmt;
 	t_token *const	t = ft_calloc(1, sizeof(t_token));
 
 	if (t == NULL)
 		return (NULL);
-	fmt = content;
 	if (fmt[0] != '%')
 		len = ft_strchr(fmt, '%') - fmt;
 	else
-		len = get_option(content, t, 1);
+		len = get_option(fmt, t, 1);
 	if (len < 0)
 		t->in = ft_strdup(fmt);
 	else
@@ -76,29 +74,4 @@ static t_token	*ft_make_token(void *content)
 	if (t->type != 'd' && t->type != 'i')
 		t->opt &= ~(PLUS | BLANK);
 	return (t);
-}
-
-int	ft_make_tokens(t_list **head, const char *format)
-{
-	t_list		*tmp;
-	t_token		*token;
-	size_t		len;
-
-	len = 0;
-	while (format && format[len])
-	{
-		token = ft_make_token((char *)format + len);
-		if (token == NULL)
-			return (-1);
-		tmp = ft_lstnew(token);
-		if (tmp == NULL || token->in == NULL)
-		{
-			free(tmp);
-			ft_free_token(token);
-			return (-1);
-		}
-		ft_lstadd_back(head, tmp);
-		len += ft_strlen(token->in);
-	}
-	return (0);
 }
