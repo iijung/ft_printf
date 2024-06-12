@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:05:50 by minjungk          #+#    #+#             */
-/*   Updated: 2022/12/06 22:37:08 by minjungk         ###   ########.fr       */
+/*   Updated: 2024/06/13 03:41:11 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ char	*ft_utoa(unsigned long n, const char *base)
 
 	base_len = baselen(base);
 	if (base_len <= 0)
-		return (0);
+		return (NULL);
 	i = numlen(n, base_len);
-	rtn = (char *)ft_calloc(i + 1, sizeof(char));
-	if (rtn == 0)
-		return (0);
+	rtn = ft_calloc(i + 1, sizeof(char));
+	if (rtn == NULL)
+		return (NULL);
 	rtn[0] = base[0];
 	while (n)
 	{

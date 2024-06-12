@@ -6,7 +6,7 @@
 /*   By: minjungk <minjungk@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 04:50:52 by minjungk          #+#    #+#             */
-/*   Updated: 2024/06/13 03:25:07 by minjungk         ###   ########.fr       */
+/*   Updated: 2024/06/13 03:39:39 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	make_out(t_token *t, char *copy, int copy_len)
 	if (t->width < t->precision)
 		t->width = t->precision;
 	t->out = ft_calloc(t->width + 1, sizeof(char));
-	if (t->out == 0)
+	if (t->out == NULL)
 		return ;
 	ft_memset(t->out, ' ', t->width);
 	if ((t->opt & ZERO) && !(t->opt & PREC))
@@ -32,7 +32,7 @@ static void	make_out(t_token *t, char *copy, int copy_len)
 		ft_memset(t->out, '0', t->precision);
 	else
 		ft_memset(t->out + t->width - t->precision, '0', t->precision);
-	if (copy == 0)
+	if (copy == NULL)
 		return ;
 	if (t->type == 's')
 		copy_len = t->precision;
@@ -51,7 +51,7 @@ static int	parse_text(t_token *t, va_list ap)
 	else if (t->type == 'c')
 	{
 		make_out(t, " ", 1);
-		if (t->out == 0)
+		if (t->out == NULL)
 			return (-1);
 		if (t->opt & MINUS)
 			t->out[0] = va_arg(ap, int);
@@ -61,7 +61,7 @@ static int	parse_text(t_token *t, va_list ap)
 	else if (t->type == 's')
 	{
 		s = va_arg(ap, char *);
-		if (s == 0)
+		if (s == NULL)
 			s = "(null)";
 		if ((t->opt & PREC) == 0 || t->precision >= (int)ft_strlen(s))
 			t->precision = ft_strlen(s);
@@ -73,7 +73,7 @@ static int	parse_text(t_token *t, va_list ap)
 
 static int	parse_number(t_token *t, char *s, char flag)
 {
-	if (s == 0)
+	if (s == NULL)
 		return (-1);
 	if (s[0] == '-')
 		t->opt |= BLANK;
@@ -104,7 +104,7 @@ static int	parse_hex(t_token *t, char *s)
 {
 	int	len;
 
-	if (s == 0)
+	if (s == NULL)
 		return (-1);
 	len = ft_strlen(s);
 	if (s[0] == '0' && (t->type != 'p'))
@@ -133,7 +133,7 @@ int	ft_parse_token(t_token *t, va_list ap)
 	const char	*dec = "0123456789";
 	const char	*hex = "0123456789abcdef";
 
-	if (t == 0)
+	if (t == NULL)
 		return (-1);
 	if (t->type == '%' || t->type == 'c' || t->type == 's')
 		return (parse_text(t, ap));
@@ -147,7 +147,7 @@ int	ft_parse_token(t_token *t, va_list ap)
 		return (parse_hex(t, ft_utoa(va_arg(ap, unsigned long), hex)));
 	else
 		t->out = ft_strdup(t->in);
-	if (t->out == 0)
+	if (t->out == NULL)
 		return (-1);
 	return (0);
 }
