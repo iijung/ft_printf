@@ -6,11 +6,12 @@
 /*   By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/17 04:45:14 by minjungk          #+#    #+#             */
-/*   Updated: 2024/06/13 04:39:49 by minjungk         ###   ########.fr       */
+/*   Updated: 2024/06/13 04:52:38 by minjungk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include "ft_printf_util.h"
 
 int	ft_printf(const char *format, ...)
 {
@@ -38,10 +39,6 @@ int	ft_vprintf(const char *format, va_list ap)
 {
 	return (ft_vdprintf(STDOUT_FILENO, format, ap));
 }
-
-extern void		ft_free_token(void *content);
-extern t_token	*ft_make_token(const char *fmt);
-extern int		ft_parse_token(t_token *t, va_list ap);
 
 int	ft_vdprintf(int fd, const char *format, va_list ap)
 {
