@@ -1,3 +1,4 @@
 [submodule "libft"]
+	branch = main
 	path = libft
 	url = git@github.com:iijung/libft.git
