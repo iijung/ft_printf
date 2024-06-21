@@ -6,7 +6,7 @@
 #    By: minjungk <minjungk@student.42seoul.>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/17 03:49:45 by minjungk          #+#    #+#              #
-#    Updated: 2024/06/13 02:57:42 by minjungk         ###   ########.fr        #
+#    Updated: 2024/06/21 10:34:10 by minjungk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,12 +17,14 @@
 # depdency
 # **************************************************************************** #
 
-LIBFT = ./libft/libft.a
+LIBFT = libft/libft.a
 
 CPPFLAGS	+= -I$(dir $(LIBFT))
 
 $(LIBFT):
-	@if [ ! -f $(@D)/Makefile ]; then git submodule update --init; fi
+	@if [ -n "$(shell find $(@D) -empty)" ]; then \
+		git submodule update --init; \
+	fi
 	$(MAKE) -C $(@D) bonus
 
 # **************************************************************************** #
@@ -45,9 +47,11 @@ OBJS = $(SRCS:.c=.o)
 DEPS = $(SRCS:.c=.d)
 -include $(DEPS)
 
+$(OBJS): $(LIBFT)
+
 all bonus: $(NAME)
 
-$(NAME): $(OBJS) | $(LIBFT)
+$(NAME): $(OBJS)
 	cp $(LIBFT) $@
 	$(AR) $(ARFLAGS) $@ $^ 
 
